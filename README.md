@@ -75,8 +75,12 @@ Photos are scraped live from **IPLT20.com** and are official team headshots only
   **team-specific** (`player/{const}/{teamId}/{imageId}.png`), so a traded player's photo is branded for his **current**
   club — de Kock on MI carries MI's headshot. One roster is cached **12 h**, so future retentions/releases/replacements
   are picked up automatically.
+- **Traded players** (`prevTeam` on a `Player`, e.g. Arshdeep Singh PBKS→MI): iplt20.com often lags behind the trade
+  window, so the current club's squad page may not list the player yet. Resolution then falls back to the player's
+  **previous franchise's** squad page (`GET /api/photo?…&prev=PBKS`) — the headshot is the same official photo, only
+  branded for the former club. The 12 h caches pick up the new club's photo automatically once iplt20.com updates.
 - Photos are proxied through the app (upstream checks Referer/UA):
-  - `GET /api/photo?name=…&team=MI&mode=ipl` → `{ src, source }` JSON (in-memory cache, 12 h)
+  - `GET /api/photo?name=…&team=MI&prev=PBKS&mode=ipl` → `{ src, source }` JSON (in-memory cache, 12 h)
   - `GET /api/photo?img=player/8903/1854/16096.png` → the image bytes (immutable cache, 7 d)
 - Players without a real headshot get an SVG placeholder from the CDN — those are **rejected** (verdict cached) so the
   UI falls back to the club-colour avatar instead of a silhouette.
@@ -87,12 +91,33 @@ Photos are scraped live from **IPLT20.com** and are official team headshots only
   scraped one.
 
 Anti-flicker design (`src/components/PlayerPhoto.tsx`):
-- resolution cache lives at **module level** (plus `sessionStorage`, `iplxi:photos:v2`), so the same player appearing in
+- resolution cache lives at **module level** (plus `sessionStorage`, `iplxi:photos:v3`), so the same player appearing in
   the pool *and* the XI board reuses one resolution — adding a player to the XI never re-resolves anyone's photo;
 - the club avatar (with the team short-code watermarked at the base) is an **always-present underlay** and the headshot
   fades in on load — no blank frames, no layout shift;
 - sub-components in `TeamWorkspace.tsx` are hoisted/memoized so selecting a player doesn't remount the squad list;
 - pointer cursors everywhere interactive (buttons/links/labels), `grab`/`grabbing` on draggable players.
+
+## Sharing a built XI
+
+The XI lives in localStorage per browser, so sharing encodes it into the team URL
+(`src/lib/share.ts`): `/team/MI?xi=id,id,~,id&cap=id` — slots comma-joined in slot order,
+`~` marks an empty slot, `cap` carries the captain. Opening a shared link loads that XI
+into the builder (a shared link wins over the local save) and the recipient can refine and
+re-share it.
+
+The **Share this XI** bar (`src/components/ShareXI.tsx`, in the XI Builder and compact on the
+broadcast reveal):
+
+- **↗ Share…** — native OS share sheet (`navigator.share`) with the rendered PNG card attached
+  where supported: opens WhatsApp, Instagram DM, X and any installed app on phones.
+- **WhatsApp** — `wa.me` deep link with the XI text + link.
+- **𝕏 Post** — twitter.com intent with the XI pre-filled.
+- **🔗 Copy Link** — clipboard copy of the share URL.
+- **⬇ Download XI Card (PNG)** — a broadcast-style card rendered on `<canvas>` (`src/lib/xiImage.ts`,
+  no dependencies): club masthead, slotted XI with the same official headshots via the same-origin
+  `/api/photo` proxy (initials avatars for players without one), captain ★, overseas ✈ and value strip.
+  Instagram has no web share intent, so the PNG is posted manually — it's sized for stories/feed.
 
 ## Sources
 

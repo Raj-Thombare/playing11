@@ -5,6 +5,7 @@ import type { Player, Role, Team } from "@/data/teams";
 import { PlayerPhoto } from "./PlayerPhoto";
 import { TeamLogo } from "./TeamLogo";
 import { fmtPrice, validateXI } from "@/lib/xi";
+import { ShareXI } from "./ShareXI";
 
 const NUM_FONT: React.CSSProperties = {
   fontFamily: "var(--font-display)",
@@ -180,20 +181,26 @@ export function BroadcastOverlay({
   const featured = capEntry ?? ordered[0];
   const others = ordered.filter((e) => e !== featured);
   const wk = xi.find((p) => p.role === "WK");
+  /** sparse slots reconstructed from `ordered`, for the share link */
+  const shareSlots: (string | null)[] = Array<string | null>(11).fill(null);
+  for (const e of ordered) shareSlots[e.slot - 1] = e.p.id;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-label={`${team.name} playing eleven`}>
       <div className="absolute inset-0" style={{ background: "radial-gradient(100% 80% at 50% -10%, rgba(23,64,128,.5), rgba(2,8,20,.96) 70%)" }} />
       <div className="absolute inset-0 beams opacity-40" />
       <div className="absolute inset-0 grain" />
-      <button
-        onClick={onClose}
-        aria-label="Close broadcast view"
-        className="fixed right-4 top-4 z-20 rounded-full border border-white/20 bg-black/50 px-4 py-2 text-sm font-semibold uppercase tracking-widest hover:bg-black/70"
-        style={{ fontFamily: "var(--font-cond)" }}
-      >
-        ✕ Close
-      </button>
+      <div className="fixed right-4 top-4 z-20 flex flex-col items-end gap-2">
+        <ShareXI team={team} slots={shareSlots} ordered={ordered} captainId={captainId} compact />
+        <button
+          onClick={onClose}
+          aria-label="Close broadcast view"
+          className="rounded-full border border-white/20 bg-black/50 px-4 py-2 text-sm font-semibold uppercase tracking-widest hover:bg-black/70"
+          style={{ fontFamily: "var(--font-cond)" }}
+        >
+          ✕ Close
+        </button>
+      </div>
 
       <div className="relative mx-auto w-full max-w-[1460px] px-3 pb-10 pt-5 sm:px-6">
         {/* the broadcast panel */}

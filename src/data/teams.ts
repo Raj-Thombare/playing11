@@ -25,6 +25,9 @@ export interface Player {
   note?: string;
   releaseWatch?: string;
   retired?: boolean;
+  /** previous franchise (trade-in players) — used as a photo-source fallback
+   *  when the current team's iplt20.com squad page doesn't list the player yet */
+  prevTeam?: TeamId;
   /** optional per-player photo override (absolute URL or /api path) — wins over the scraped official photo */
   photo?: string;
   stats: Stats;

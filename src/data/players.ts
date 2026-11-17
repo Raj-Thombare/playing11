@@ -4,6 +4,8 @@ interface Extra {
   note?: string;
   releaseWatch?: string;
   retired?: boolean;
+  /** former franchise for the photo fallback (see Player.prevTeam) */
+  prevTeam?: TeamId;
 }
 
 let seq = 0;
@@ -25,6 +27,7 @@ function P(
     note: extra?.note,
     releaseWatch: extra?.releaseWatch,
     retired: extra?.retired,
+    prevTeam: extra?.prevTeam,
     // seq keeps deterministic insertion order stable across teams
     ...({ _s: seq++ } as object),
   } as Player;
@@ -39,7 +42,7 @@ function P(
 export const PLAYERS: Player[] = [
   /* ---------------- MUMBAI INDIANS (25, 7 OV) ---------------- */
   P("Jasprit Bumrah", "MI", "PACE", "India", 18, "retained", { m: 142, runs: 56, wkts: 174, avg: 0, sr: 0, econ: 7.24 }, { note: "Franchise spearhead since 2013" }),
-  P("Arshdeep Singh", "MI", "PACE", "India", 18, "trade-in", { m: 96, runs: 97, wkts: 111, avg: 0, sr: 0, econ: 8.72 }, { note: "Traded from PBKS, 11 Nov 2026 (₹18 Cr). PBKS' all-time leading IPL wicket-taker" }),
+  P("Arshdeep Singh", "MI", "PACE", "India", 18, "trade-in", { m: 96, runs: 97, wkts: 111, avg: 0, sr: 0, econ: 8.72 }, { note: "Traded from PBKS, 11 Nov 2026 (₹18 Cr). PBKS' all-time leading IPL wicket-taker", prevTeam: "PBKS" }),
   P("Suryakumar Yadav", "MI", "BAT", "India", 16.35, "retained", { m: 165, runs: 4600, wkts: 0, avg: 32.6, sr: 168.3 }),
   P("Rohit Sharma", "MI", "BAT", "India", 16.3, "retained", { m: 273, runs: 6950, wkts: 15, avg: 29.9, sr: 131.1 }),
   P("Trent Boult", "MI", "PACE", "New Zealand", 12.5, "retained", { m: 112, runs: 120, wkts: 132, avg: 0, sr: 0, econ: 8.4 }),
@@ -69,7 +72,7 @@ export const PLAYERS: Player[] = [
 
   /* ---------------- CHENNAI SUPER KINGS (27, 10 OV — over cap, cuts due) ---------------- */
   P("Ruturaj Gaikwad", "CSK", "BAT", "India", 18, "retained", { m: 76, runs: 2520, wkts: 0, avg: 39.4, sr: 138.4 }, { note: "Captain since 2024" }),
-  P("Sanju Samson", "CSK", "WK", "India", 18, "retained", { m: 178, runs: 4560, wkts: 0, avg: 30.2, sr: 137.6 }, { note: "With CSK since the 2026 window (₹18 Cr trade from RR) — one of the biggest trades in IPL history" }),
+  P("Sanju Samson", "CSK", "WK", "India", 18, "retained", { m: 178, runs: 4560, wkts: 0, avg: 30.2, sr: 137.6 }, { note: "With CSK since the 2026 window (₹18 Cr trade from RR) — one of the biggest trades in IPL history", prevTeam: "RR" }),
   P("Kartik Sharma", "CSK", "WK", "India", 14.2, "auction", { m: 5, runs: 140, wkts: 0, avg: 28, sr: 152 }, { note: "Dec 2025 auction — record uncapped WK-Batter bid; Gaikwad succession plan", releaseWatch: "High-Cap Purse Flex (₹10 Cr+)" }),
   P("Prashant Veer", "CSK", "AR", "India", 14.2, "auction", { m: 6, runs: 70, wkts: 5, avg: 18, sr: 145, econ: 8.6 }, { note: "Dec 2025 auction — record uncapped all-rounder bid", releaseWatch: "High-Cap Purse Flex (₹10 Cr+)" }),
   P("Shivam Dube", "CSK", "AR", "India", 12, "retained", { m: 78, runs: 1550, wkts: 23, avg: 28, sr: 152, econ: 9.3 }),
@@ -95,8 +98,8 @@ export const PLAYERS: Player[] = [
   P("Shreyas Gopal", "CSK", "SPIN", "India", 0.3, "retained", { m: 2, runs: 8, wkts: 2, avg: 0, sr: 0, econ: 8.8 }),
   P("Ayush Mhatre", "CSK", "BAT", "India", 1.5, "retained", { m: 11, runs: 310, wkts: 0, avg: 25, sr: 156 }, { note: "Missed IPL 2026 — fully fit for 2027" }),
   P("Ramakrishna Ghosh", "CSK", "SPIN", "India", 0.3, "retained", { m: 6, runs: 20, wkts: 5, avg: 0, sr: 0, econ: 8.9 }, { note: "Missed IPL 2026 — fully fit for 2027" }),
-  P("Liam Livingstone", "CSK", "AR", "England", 6, "trade-in", { m: 52, runs: 950, wkts: 19, avg: 25, sr: 145, econ: 8.3 }, { note: "Traded from SRH, 5 Nov 2026 (₹6 Cr revised)" }),
-  P("Jack Edwards", "CSK", "AR", "Australia", 3, "trade-in", { m: 0 }, { note: "Traded from SRH, 5 Nov 2026 (₹3 Cr); carrying a minor side strain — expected fit for IPL 2027" }),
+  P("Liam Livingstone", "CSK", "AR", "England", 6, "trade-in", { m: 52, runs: 950, wkts: 19, avg: 25, sr: 145, econ: 8.3 }, { note: "Traded from SRH, 5 Nov 2026 (₹6 Cr revised)", prevTeam: "SRH" }),
+  P("Jack Edwards", "CSK", "AR", "Australia", 3, "trade-in", { m: 0 }, { note: "Traded from SRH, 5 Nov 2026 (₹3 Cr); carrying a minor side strain — expected fit for IPL 2027", prevTeam: "SRH" }),
 
   /* ---------------- ROYAL CHALLENGERS BENGALURU (23, 7 OV) ---------------- */
   P("Virat Kohli", "RCB", "BAT", "India", 21, "retained", { m: 276, runs: 8850, wkts: 4, avg: 39.2, sr: 132.1 }, { note: "Only player to represent one franchise since 2008; 2× champion" }),
@@ -155,7 +158,7 @@ export const PLAYERS: Player[] = [
 
   /* ---------------- DELHI CAPITALS (25, 8 OV) ---------------- */
   P("Axar Patel", "DC", "AR", "India", 16.5, "retained", { m: 168, runs: 1960, wkts: 132, avg: 24, sr: 135, econ: 7.4 }, { note: "Captain since 2025; longest-serving DC player" }),
-  P("Rishabh Pant", "DC", "WK", "India", 15, "trade-in", { m: 132, runs: 3560, wkts: 0, avg: 34.6, sr: 148.3 }, { note: "Traded from LSG, 23 Jun 2026 (₹15 Cr revised) — homecoming" }),
+  P("Rishabh Pant", "DC", "WK", "India", 15, "trade-in", { m: 132, runs: 3560, wkts: 0, avg: 34.6, sr: 148.3 }, { note: "Traded from LSG, 23 Jun 2026 (₹15 Cr revised) — homecoming", prevTeam: "LSG" }),
   P("KL Rahul", "DC", "WK", "India", 14, "retained", { m: 152, runs: 4820, wkts: 0, avg: 45.3, sr: 135.6 }),
   P("Mitchell Starc", "DC", "PACE", "Australia", 11.75, "retained", { m: 52, runs: 130, wkts: 58, avg: 0, sr: 0, econ: 8.9 }),
   P("Tristan Stubbs", "DC", "BAT", "South Africa", 10, "retained", { m: 52, runs: 980, wkts: 0, avg: 28, sr: 162 }),
@@ -178,13 +181,13 @@ export const PLAYERS: Player[] = [
   P("Ajay Mandal", "DC", "AR", "India", 0.3, "retained", { m: 0 }),
   P("Tripurana Vijay", "DC", "AR", "India", 0.3, "retained", { m: 0 }),
   P("Sahil Parakh", "DC", "SPIN", "India", 0.3, "retained", { m: 0 }),
-  P("Zeeshan Ansari", "DC", "SPIN", "India", 0.4, "trade-in", { m: 8, runs: 12, wkts: 9, avg: 0, sr: 0, econ: 8.6 }, { note: "Traded from SRH, 14 Oct 2026 (₹40 L)" }),
+  P("Zeeshan Ansari", "DC", "SPIN", "India", 0.4, "trade-in", { m: 8, runs: 12, wkts: 9, avg: 0, sr: 0, econ: 8.6 }, { note: "Traded from SRH, 14 Oct 2026 (₹40 L)", prevTeam: "SRH" }),
   P("Ben Duckett", "DC", "BAT", "England", 2, "retained", { m: 10, runs: 250, wkts: 0, avg: 25, sr: 141 }, { note: "Pulled out of IPL 2026 — fully fit for 2027" }),
 
   /* ---------------- PUNJAB KINGS (25, 8 OV) ---------------- */
   P("Shreyas Iyer", "PBKS", "BAT", "India", 26.75, "retained", { m: 132, runs: 3640, wkts: 0, avg: 34, sr: 147 }, { note: "Captain since 2025; 604 runs @ 50.33 in the 2025 title-run season" }),
   P("Yuzvendra Chahal", "PBKS", "SPIN", "India", 18, "retained", { m: 166, runs: 60, wkts: 227, avg: 0, sr: 0, econ: 7.7 }),
-  P("Hardik Pandya", "PBKS", "AR", "India", 18, "trade-in", { m: 148, runs: 2520, wkts: 72, avg: 27, sr: 145, econ: 9.2 }, { note: "Traded from MI, 11 Nov 2026 (₹18 Cr revised)" }),
+  P("Hardik Pandya", "PBKS", "AR", "India", 18, "trade-in", { m: 148, runs: 2520, wkts: 72, avg: 27, sr: 145, econ: 9.2 }, { note: "Traded from MI, 11 Nov 2026 (₹18 Cr revised)", prevTeam: "MI" }),
   P("Marcus Stoinis", "PBKS", "AR", "Australia", 11, "retained", { m: 106, runs: 1520, wkts: 46, avg: 24, sr: 141, econ: 9.0 }),
   P("Marco Jansen", "PBKS", "AR", "South Africa", 7, "retained", { m: 51, runs: 310, wkts: 53, avg: 15, sr: 130, econ: 9.0 }),
   P("Shashank Singh", "PBKS", "BAT", "India", 5.5, "retained", { m: 46, runs: 920, wkts: 0, avg: 30, sr: 167 }),
@@ -211,7 +214,7 @@ export const PLAYERS: Player[] = [
   /* ---------------- RAJASTHAN ROYALS (25, 8 OV) ---------------- */
   P("Yashasvi Jaiswal", "RR", "BAT", "India", 18, "retained", { m: 81, runs: 2440, wkts: 0, avg: 33, sr: 152.4 }),
   P("Dhruv Jurel", "RR", "WK", "India", 14, "retained", { m: 46, runs: 870, wkts: 0, avg: 30, sr: 146 }),
-  P("Ravindra Jadeja", "RR", "AR", "India", 14, "retained", { m: 266, runs: 3120, wkts: 172, avg: 26, sr: 131, econ: 7.58 }, { note: "With RR since the 2026 window (₹14 Cr trade from CSK) — senior leadership behind Parag" }),
+  P("Ravindra Jadeja", "RR", "AR", "India", 14, "retained", { m: 266, runs: 3120, wkts: 172, avg: 26, sr: 131, econ: 7.58 }, { note: "With RR since the 2026 window (₹14 Cr trade from CSK) — senior leadership behind Parag", prevTeam: "CSK" }),
   P("Riyan Parag", "RR", "AR", "India", 14, "retained", { m: 96, runs: 1320, wkts: 9, avg: 25, sr: 148, econ: 9.0 }, { note: "Captain since 2026 — RR's first full-season homegrown skipper since 2008 era" }),
   P("Jofra Archer", "RR", "PACE", "England", 12.5, "retained", { m: 62, runs: 260, wkts: 72, avg: 0, sr: 0, econ: 8.3 }),
   P("Shimron Hetmyer", "RR", "BAT", "Guyana", 11, "retained", { m: 86, runs: 1620, wkts: 0, avg: 32, sr: 156 }),
@@ -260,14 +263,14 @@ export const PLAYERS: Player[] = [
   P("Smaran Ravichandran", "SRH", "SPIN", "India", 0.3, "retained", { m: 0 }),
   P("RS Ambrish", "SRH", "PACE", "India", 0.3, "replacement", { m: 0 }, { note: "2026 mid-season replacement", releaseWatch: "2026 Replacement Cover" }),
   P("Brydon Carse", "SRH", "PACE", "England", 2, "retained", { m: 3, runs: 10, wkts: 3, avg: 0, sr: 0, econ: 9.2 }, { note: "Fitness doubts through IPL 2026 — fully fit for 2027" }),
-  P("T. Natarajan", "SRH", "PACE", "India", 5, "trade-in", { m: 62, runs: 25, wkts: 66, avg: 0, sr: 0, econ: 8.8 }, { note: "Traded from DC, 14 Oct 2026 (₹5 Cr revised) — returns to SRH" }),
-  P("Khaleel Ahmed", "SRH", "PACE", "India", 4.8, "trade-in", { m: 66, runs: 60, wkts: 71, avg: 0, sr: 0, econ: 8.8 }, { note: "Traded from CSK, 5 Nov 2026 (₹4.8 Cr)" }),
-  P("Nathan Ellis", "SRH", "PACE", "Australia", 2, "trade-in", { m: 16, runs: 20, wkts: 19, avg: 10, sr: 118, econ: 8.9 }, { note: "Traded from CSK, 5 Nov 2026 (₹2 Cr); ruled out of IPL 2026 while at CSK" }),
+  P("T. Natarajan", "SRH", "PACE", "India", 5, "trade-in", { m: 62, runs: 25, wkts: 66, avg: 0, sr: 0, econ: 8.8 }, { note: "Traded from DC, 14 Oct 2026 (₹5 Cr revised) — returns to SRH", prevTeam: "DC" }),
+  P("Khaleel Ahmed", "SRH", "PACE", "India", 4.8, "trade-in", { m: 66, runs: 60, wkts: 71, avg: 0, sr: 0, econ: 8.8 }, { note: "Traded from CSK, 5 Nov 2026 (₹4.8 Cr)", prevTeam: "CSK" }),
+  P("Nathan Ellis", "SRH", "PACE", "Australia", 2, "trade-in", { m: 16, runs: 20, wkts: 19, avg: 10, sr: 118, econ: 8.9 }, { note: "Traded from CSK, 5 Nov 2026 (₹2 Cr); ruled out of IPL 2026 while at CSK", prevTeam: "CSK" }),
 
   /* ---------------- GUJARAT TITANS (25, 7 OV) ---------------- */
   P("Rashid Khan", "GT", "SPIN", "Afghanistan", 18, "retained", { m: 137, runs: 460, wkts: 167, avg: 15, sr: 130, econ: 6.62 }),
   P("Shubman Gill", "GT", "BAT", "India", 16.5, "retained", { m: 137, runs: 4020, wkts: 0, avg: 40.1, sr: 138.2 }, { note: "Captain since 2024; 2,449 GT runs @ 46.2 through 2025" }),
-  P("Jos Buttler", "GT", "WK", "England", 15.75, "retained", { m: 122, runs: 3720, wkts: 0, avg: 38, sr: 148.3 }, { note: "With GT since IPL 2025 (trade from RR)" }),
+  P("Jos Buttler", "GT", "WK", "England", 15.75, "retained", { m: 122, runs: 3720, wkts: 0, avg: 38, sr: 148.3 }, { note: "With GT since IPL 2025 (trade from RR)", prevTeam: "RR" }),
   P("Mohammed Siraj", "GT", "PACE", "India", 12.25, "retained", { m: 117, runs: 90, wkts: 122, avg: 0, sr: 0, econ: 8.5 }),
   P("Kagiso Rabada", "GT", "PACE", "South Africa", 10.75, "retained", { m: 91, runs: 120, wkts: 127, avg: 0, sr: 0, econ: 8.2 }),
   P("Prasidh Krishna", "GT", "PACE", "India", 9.5, "retained", { m: 66, runs: 40, wkts: 66, avg: 0, sr: 0, econ: 8.4 }),
@@ -295,7 +298,7 @@ export const PLAYERS: Player[] = [
 
   /* ---------------- LUCKNOW SUPER GIANTS (24, 6 OV) ---------------- */
   P("Nicholas Pooran", "LSG", "WK", "Trinidad & Tobago", 21, "retained", { m: 97, runs: 2140, wkts: 0, avg: 33, sr: 162 }, { note: "Front-runner for LSG captaincy after Pant's exit" }),
-  P("Kuldeep Yadav", "LSG", "SPIN", "India", 13.5, "trade-in", { m: 92, runs: 120, wkts: 107, avg: 0, sr: 0, econ: 7.5 }, { note: "Traded from DC, 23 Jun 2026 (₹13.5 Cr)" }),
+  P("Kuldeep Yadav", "LSG", "SPIN", "India", 13.5, "trade-in", { m: 92, runs: 120, wkts: 107, avg: 0, sr: 0, econ: 7.5 }, { note: "Traded from DC, 23 Jun 2026 (₹13.5 Cr)", prevTeam: "DC" }),
   P("Mayank Yadav", "LSG", "PACE", "India", 11, "retained", { m: 21, runs: 10, wkts: 23, avg: 0, sr: 0, econ: 8.2 }, { note: "150kph+ prospect; injuries limited 2025-26" }),
   P("Mohammed Shami", "LSG", "PACE", "India", 10, "retained", { m: 122, runs: 140, wkts: 133, avg: 0, sr: 0, econ: 8.6 }),
   P("Avesh Khan", "LSG", "PACE", "India", 9.75, "retained", { m: 67, runs: 60, wkts: 66, avg: 0, sr: 0, econ: 8.8 }),

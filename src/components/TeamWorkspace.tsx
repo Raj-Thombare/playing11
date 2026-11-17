@@ -7,8 +7,10 @@ import { PlayerPhoto, getPhotoMode, setPhotoMode, PREF_EVENT, type PhotoMode } f
 import { OverseasChip, RoleBadge, StatusBadge } from "./Badges";
 import { TeamLogo } from "./TeamLogo";
 import { BroadcastOverlay } from "./BroadcastOverlay";
+import { ShareXI } from "./ShareXI";
 import { ROLE_LABEL, ROLE_ORDER, fmtPrice, validateXI, type Check } from "@/lib/xi";
 import { autoPickXI, type AutoPickResult } from "@/lib/autoPick";
+import { decodeSlots } from "@/lib/share";
 
 type Tab = "builder" | "squad" | "trades";
 
@@ -453,11 +455,30 @@ export function TeamWorkspace({
   const [freed, setFreed] = useState<Record<string, boolean>>({});
   const [saved, setSaved] = useState(false);
   const [ready, setReady] = useState(false);
+  const [fromLink, setFromLink] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
 
-  /* ---- persistence (loads once, then only saves after hydration) ---- */
+  /* ---- persistence (loads once, then only saves after hydration) ----
+     A shared link (?xi=…&cap=…) wins over this browser's saved XI, so the
+     recipient sees the shared XI exactly as it was built. */
   useEffect(() => {
     try {
+      const params = new URLSearchParams(window.location.search);
+      const xiParam = params.get("xi");
+      if (xiParam) {
+        const next = emptySlots();
+        decodeSlots(xiParam).forEach((id, i) => {
+          if (!id) return;
+          const p = byId.get(id);
+          next[i] = p && !p.retired && p.status !== "injured" && p.status !== "released" ? id : null;
+        });
+        setSlots(next);
+        setFromLink(true);
+        const cap = params.get("cap");
+        if (cap && byId.has(cap)) setCaptainId(cap);
+        setReady(true);
+        return;
+      }
       const s = localStorage.getItem(`iplxi:sel:${team.id}`);
       if (s) {
         const arr = JSON.parse(s) as (string | null)[];
@@ -684,7 +705,7 @@ export function TeamWorkspace({
           </button>
         ))}
         <span className="ml-auto self-center text-xs text-white/40">
-          {saved ? "XI saved ✓" : "XI auto-saves to this browser"}
+          {saved ? "XI saved ✓" : fromLink ? "🔗 Shared XI loaded — edits save to this browser" : "XI auto-saves to this browser"}
         </span>
       </div>
 
@@ -838,6 +859,9 @@ export function TeamWorkspace({
                 >
                   Mark as Final
                 </button>
+              </div>
+              <div className="mt-3 border-t border-white/10 pt-3">
+                <ShareXI team={team} slots={slots} ordered={ordered} captainId={captainId} />
               </div>
               {ai && (
                 <div className="mt-3 rounded-lg border border-purple-400/20 bg-purple-500/5 p-3">

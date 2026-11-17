@@ -4,14 +4,18 @@ import { officialPhoto } from "@/lib/iplPhotos";
 /**
  * Player photo resolution.
  *
- *   GET /api/photo?name=…&team=MI&mode=ipl   → { src, source } (JSON)
- *   GET /api/photo?img=player/8903/1854/1.png → image bytes (proxy)
+ *   GET /api/photo?name=…&team=MI&prev=PBKS&mode=ipl → { src, source } (JSON)
+ *   GET /api/photo?img=player/8903/1854/1.png        → image bytes (proxy)
  *
  * Photo policy (strict IPL):
  *   - mode "ipl" (default): ONLY official IPLT20.com headshots, served from
- *     the player's own team page (team-specific CDN paths). If a player has
- *     no official headshot, src is null and the UI shows the team avatar.
- *   - mode "wiki": opt-in fallback — official photo first, Wikipedia next.
+ *     the player's own team page (team-specific CDN paths). If the current
+ *     team's squad page doesn't list the player yet (recently traded players,
+ *     e.g. Arshdeep Singh PBKS→MI in Nov 2026), the previous franchise's
+ *     squad page (`prev=`) is tried next. If neither has a real headshot,
+ *     src is null and the UI shows the team avatar.
+ *   - mode "wiki": opt-in fallback — official photo first (current team,
+ *     then previous team), Wikipedia next.
  */
 
 const cache = new Map<string, { src: string | null; source: string; at: number }>();
@@ -95,10 +99,11 @@ export async function GET(req: NextRequest) {
 
   const name = params.get("name")?.trim() || "";
   const team = (params.get("team") || "").toUpperCase();
+  const prev = (params.get("prev") || "").toUpperCase();
   const mode = params.get("mode") === "wiki" ? "wiki" : "ipl";
   if (!name || !team) return NextResponse.json({ src: null, source: "none" });
 
-  const key = `${team}:${mode}:${name}`;
+  const key = `${team}:${prev}:${mode}:${name}`;
   const hit = cache.get(key);
   if (hit && Date.now() - hit.at < RESOLVE_TTL) {
     return NextResponse.json({ src: hit.src, source: hit.source });
@@ -107,11 +112,17 @@ export async function GET(req: NextRequest) {
   let result = { src: null as string | null, source: "none" };
 
   // 1) official IPLT20.com headshot from the player's own team (strict mode always uses this)
-  const pathname = await officialPhoto(team, name);
+  let pathname = await officialPhoto(team, name);
+  // 2) recently traded players may not be on the new club's squad page yet —
+  //    fall back to the previous franchise's page (photo is branded for that
+  //    club, which is still the official headshot)
+  if (!pathname && prev && prev !== team) {
+    pathname = await officialPhoto(prev, name);
+  }
   if (pathname) {
     result = { src: `/api/photo?img=${encodeURIComponent(pathname)}`, source: "IPLT20.com" };
   } else if (mode === "wiki") {
-    // 2) opt-in Wikipedia fallback
+    // 3) opt-in Wikipedia fallback
     const variants: string[] = [name];
     if (!name.includes("(")) variants.push(`${name} (cricketer)`);
     const parts = name.split(" ");

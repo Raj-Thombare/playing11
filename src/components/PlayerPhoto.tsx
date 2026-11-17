@@ -8,9 +8,10 @@ import { initials } from "@/lib/xi";
 
 /* ------------------------------------------------------------------ *
  * Photo policy — strictly from the player's respective IPL team.
- *   mode "ipl" (default): ONLY official IPLT20.com headshots (the CDN
- *     path is team-specific, so traded players carry their CURRENT
- *     club's photo). No photo → team-colour avatar, nothing else.
+ *   mode "ipl" (default): ONLY official IPLT20.com headshots. Resolution
+ *     tries the CURRENT club's squad page first; recently traded players
+ *     who aren't on the new club's page yet fall back to their PREVIOUS
+ *     franchise's page (player.prevTeam). No photo → team-colour avatar.
  *   mode "wiki" (opt-in): official first, then Wikipedia.
  * The data can also pin a specific image per player via `player.photo`.
  * ------------------------------------------------------------------ */
@@ -54,7 +55,9 @@ export function setPhotoMode(m: PhotoMode): void {
 
 const resolved = new Map<string, string | null>(); // key -> src (null = no photo, use avatar)
 const inflight = new Map<string, Promise<string | null>>();
-const SS_KEY = "iplxi:photos:v2";
+// v3: key now carries the previous franchise (trade-in photo fallback) and
+// invalidates stale "no photo" negatives from before the fallback existed
+const SS_KEY = "iplxi:photos:v3";
 
 if (typeof window !== "undefined") {
   try {
@@ -85,14 +88,20 @@ function persist(key: string, src: string | null): void {
   }
 }
 
+function cacheKeyOf(player: Player, mode: PhotoMode): string {
+  return `${player.team}|${player.prevTeam ?? ""}|${mode}|${player.name}`;
+}
+
 function resolvePhoto(player: Player, mode: PhotoMode): Promise<string | null> {
-  const key = `${player.team}|${mode}|${player.name}`;
+  const key = cacheKeyOf(player, mode);
   const cached = resolved.get(key);
   if (cached !== undefined) return Promise.resolve(cached);
   const pending = inflight.get(key);
   if (pending) return pending;
   const task = fetch(
-    `/api/photo?name=${encodeURIComponent(player.name)}&team=${encodeURIComponent(player.team)}&mode=${mode}`
+    `/api/photo?name=${encodeURIComponent(player.name)}&team=${encodeURIComponent(player.team)}` +
+      (player.prevTeam ? `&prev=${encodeURIComponent(player.prevTeam)}` : "") +
+      `&mode=${mode}`
   )
     .then((r) => r.json())
     .then((d: { src: string | null }) => {
@@ -112,7 +121,7 @@ function resolvePhoto(player: Player, mode: PhotoMode): Promise<string | null> {
 }
 
 function peekPhoto(player: Player, mode: PhotoMode): string | null | undefined {
-  return resolved.get(`${player.team}|${mode}|${player.name}`);
+  return resolved.get(cacheKeyOf(player, mode));
 }
 
 /** club-colour avatar with the team short-code watermarked at the base */
@@ -139,7 +148,8 @@ const useBeforePaint = typeof window === "undefined" ? useEffect : useLayoutEffe
 /**
  * Uniform player headshot.
  *   1. `player.photo` data override (documented escape hatch)
- *   2. Official IPLT20.com team photo (mode "ipl" AND "wiki")
+ *   2. Official IPLT20.com team photo — current club, then previous club
+ *      for traded players (mode "ipl" AND "wiki")
  *   3. Wikipedia (mode "wiki" only)
  *   4. Uniform club-colour avatar — always present as the underlay
  *
@@ -183,7 +193,7 @@ export function PlayerPhoto({
     return () => window.removeEventListener(PREF_EVENT, onPref);
   }, []);
 
-  const cacheKey = `${player.team}|${mode}|${player.name}`;
+  const cacheKey = cacheKeyOf(player, mode);
   useBeforePaint(() => {
     let alive = true;
     const override = player.photo;
