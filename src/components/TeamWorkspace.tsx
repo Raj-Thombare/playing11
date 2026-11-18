@@ -296,6 +296,71 @@ const Slot = memo(function Slot({
   );
 });
 
+/* Mobile-only chip for the Playing XI row: circular badge with player avatar */
+const XIChip = memo(function XIChip({
+  n,
+  player,
+  isCap,
+  team,
+  impact,
+  onSet,
+}: {
+  n?: number;
+  player?: Player;
+  isCap?: boolean;
+  team: Team;
+  impact?: boolean;
+  onSet?: (id: string | null) => void;
+}) {
+  const handleClick = () => {
+    if (impact && onSet && player) onSet(null);
+  };
+
+  if (!player && !impact) {
+    return (
+      <div
+        className='shrink-0 w-12 h-12 rounded-full border border-dashed border-white/15 flex items-center justify-center text-[10px] font-bold text-white/30'
+        style={{ fontFamily: "var(--font-display)" }}
+      >
+        {n}
+      </div>
+    );
+  }
+
+  const isImpact = !!impact;
+  const badge = isImpact ? '⚡' : isCap ? '★' : undefined;
+  const badgeBg = isImpact ? '#ffc75a' : '#f59e0b';
+
+  return (
+    <div
+      onClick={handleClick}
+      className='shrink-0 w-12 h-12 rounded-full border flex items-center justify-center relative overflow-hidden cursor-pointer'
+      style={{
+        borderColor: isImpact ? '#ffc75a' : team.c2,
+        background: 'rgba(255,255,255,.04)',
+      }}
+    >
+      {player ? (
+        <>
+          <PlayerPhoto player={player} c1={team.c1} c2={team.c2} ink={team.ink} size={40} ring={false} />
+          {badge && (
+            <span
+              className='absolute -right-1 -top-1 w-3.5 h-3.5 rounded-full flex items-center justify-center text-[8px] font-bold text-black'
+              style={{ fontFamily: "var(--font-cond)", background: badgeBg }}
+            >
+              {badge}
+            </span>
+          )}
+        </>
+      ) : (
+        <span className='text-[10px] font-bold text-white/30' style={{ fontFamily: "var(--font-display)" }}>
+          {isImpact ? '⚡' : n}
+        </span>
+      )}
+    </div>
+  );
+});
+
 const ImpactSlot = memo(function ImpactSlot({
   player,
   team,
@@ -1021,7 +1086,8 @@ export function TeamWorkspace({
                 Drag between slots to reorder · drop a player on a filled slot
                 to swap · use the ⚡ Impact card for the 12th
               </p>
-              <div className='mt-2 space-y-1.5'>
+              {/* Desktop: vertical slot list (hidden on mobile) */}
+              <div className='mt-2 space-y-1.5 hidden sm:block'>
                 {Array.from({ length: 11 }, (_, i) => (
                   <Slot
                     key={i}
@@ -1039,14 +1105,49 @@ export function TeamWorkspace({
                   />
                 ))}
               </div>
-              <ImpactSlot
-                player={impactPlayer}
-                team={team}
-                dragActive={dragId}
-                onSet={setImpact}
-                onDragStart={onDragStart}
-                onDragEnd={onDragEnd}
-              />
+
+              {/* Mobile: two rows of chips — 6 in row 1, 5 + impact in row 2 */}
+              <div className='mt-2 sm:hidden flex flex-col gap-2 items-center'>
+                <div className='flex items-center gap-1.5 justify-center'>
+                  {Array.from({ length: 6 }, (_, i) => (
+                    <XIChip
+                      key={i}
+                      n={i + 1}
+                      player={slots[i] ? byId.get(slots[i] as string) : undefined}
+                      isCap={!!slots[i] && slots[i] === captainId}
+                      team={team}
+                    />
+                  ))}
+                </div>
+                <div className='flex items-center gap-1.5 justify-center'>
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <XIChip
+                      key={i}
+                      n={i + 7}
+                      player={slots[i + 6] ? byId.get(slots[i + 6] as string) : undefined}
+                      isCap={!!slots[i + 6] && slots[i + 6] === captainId}
+                      team={team}
+                    />
+                  ))}
+                  <XIChip
+                    key='impact'
+                    player={impactPlayer}
+                    team={team}
+                    impact
+                    onSet={setImpact}
+                  />
+                </div>
+              </div>
+              <div className='hidden sm:block'>
+                <ImpactSlot
+                  player={impactPlayer}
+                  team={team}
+                  dragActive={dragId}
+                  onSet={setImpact}
+                  onDragStart={onDragStart}
+                  onDragEnd={onDragEnd}
+                />
+              </div>
               <div className='mt-3'>
                 <ValidationStrip checks={st.count} />
               </div>
@@ -1078,7 +1179,7 @@ export function TeamWorkspace({
                       ? "Show the broadcast playing-XI graphic — empty slots appear as placeholders"
                       : "Pick at least one player first"
                   }>
-                  📺 View Playing XI
+                  Review XI
                 </button>
                 <button
                   onClick={reset}
