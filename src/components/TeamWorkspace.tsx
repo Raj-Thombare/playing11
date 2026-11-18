@@ -1013,7 +1013,7 @@ export function TeamWorkspace({
                 Drag any player into slots 1–11 or the ⚡ Impact card — or drop
                 him back here to remove
               </p>
-              <div className='mt-3 max-h-[70vh] space-y-4 overflow-y-auto pr-1'>
+              <div className='mt-3 space-y-4 pr-1'>
                 {grouped.map((g) => (
                   <div key={g.role}>
                     <div
@@ -1651,8 +1651,8 @@ export function TeamWorkspace({
         />
       )}
 
-      {/* Mobile fixed bottom bar — Playing XI chips + validation + Review XI */}
-      {tab === "builder" && (
+      {/* Mobile fixed bottom bar — Playing XI chips + validation + Review XI (hidden while overlay is open) */}
+      {tab === "builder" && !onAir && (
         <div className='fixed bottom-0 left-0 right-0 z-50 sm:hidden border-t border-white/10 bg-[#0a1628]/95 backdrop-blur px-3 pt-2 pb-3'>
           {/* Header row */}
           <div className='flex items-center justify-between gap-2 mb-2'>
