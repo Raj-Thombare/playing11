@@ -346,6 +346,7 @@ const ImpactSlot = memo(function ImpactSlot({
           ⚡ Impact Player
         </span>
         <span className="chip" style={{ color: "rgba(255,255,255,.45)", fontSize: "0.68rem" }}>12th · optional</span>
+        {player && <RoleBadge role={player.role} compact />}
       </div>
       <div className="flex items-center gap-2">
         {player ? (
@@ -362,9 +363,14 @@ const ImpactSlot = memo(function ImpactSlot({
             >
               <PlayerPhoto player={player} c1={team.c1} c2={team.c2} ink={team.ink} size={38} />
             </span>
-            <span className="truncate text-sm font-semibold uppercase tracking-wide" style={{ fontFamily: "var(--font-cond)" }}>
-              {player.name}
-            </span>
+            <div className="min-w-0 flex-1">
+              <div className="truncate text-sm font-semibold uppercase tracking-wide" style={{ fontFamily: "var(--font-cond)" }}>
+                {player.name}
+              </div>
+              <div className="text-[10px] uppercase tracking-wider text-white/45" style={{ fontFamily: "var(--font-cond)" }}>
+                {ROLE_LABEL[player.role]} · {fmtPrice(player.price)}
+              </div>
+            </div>
           </>
         ) : (
           <span className="text-sm text-white/40" style={{ fontFamily: "var(--font-cond)" }}>
