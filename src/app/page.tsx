@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { SEASON_CONTEXT, TEAMS, TRADES } from "@/data/teams";
-import { LEAGUE_STATS, playersOfTeam } from "@/data/players";
+import { LEAGUE_STATS, PLAYERS, playersOfTeam } from "@/data/players";
 import { TeamLogo } from "@/components/TeamLogo";
 import { fmtPrice } from "@/lib/xi";
 
@@ -95,6 +95,12 @@ export default function Home() {
               style={{ fontFamily: "var(--font-cond)" }}>
               🔁 6 confirmed 2027 trades · 14 players moved
             </span>
+            <Link
+              href='/released'
+              className='plate px-3 py-2 transition-colors hover:border-white/30 hover:bg-white/10'
+              style={{ fontFamily: "var(--font-cond)", color: "#ff8a8a" }}>
+              🔴 View all {PLAYERS.filter((p) => p.status === "released").length} released players →
+            </Link>
             <span
               className='plate px-3 py-2'
               style={{ fontFamily: "var(--font-cond)", color: "#8fd694" }}>

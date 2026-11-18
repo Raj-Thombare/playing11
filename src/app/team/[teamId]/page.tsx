@@ -21,6 +21,9 @@ export default async function TeamPage({ params }: { params: Promise<{ teamId: s
         <Link href="/" className="rounded-lg border border-white/10 px-3 py-1.5 font-semibold uppercase tracking-widest hover:bg-white/5" style={{ fontFamily: "var(--font-cond)" }}>
           ← All Teams
         </Link>
+        <Link href="/released" className="rounded-lg border border-white/10 px-3 py-1.5 font-semibold uppercase tracking-widest text-[#ff8a8a] hover:bg-white/5" style={{ fontFamily: "var(--font-cond)" }}>
+          🔴 Released Players
+        </Link>
         <span className="chip" style={{ color: "#ffc75a" }}>Season data: 17 Nov 2026</span>
       </nav>
       <TeamWorkspace team={team} squad={squad} trades={TRADES} />
