@@ -143,6 +143,44 @@ function PlayerCard({ p, slot, delay, team }: { p: Player; slot: number; delay: 
   );
 }
 
+/** empty slot in a draft XI: dashed frame, silhouette avatar, "TO BE NAMED" bar */
+function EmptyCard({ slot, delay }: { slot: number; delay: number }) {
+  return (
+    <div
+      className="anim-up relative flex h-56 flex-col overflow-hidden rounded-lg border border-dashed border-white/20 bg-white/[0.03] lg:h-auto"
+      style={{ animationDelay: `${delay}s` }}
+    >
+      <div className="absolute left-1.5 top-1.5 z-10 flex flex-col items-center rounded-md border border-white/10 bg-black/30 px-1.5 pb-1 pt-0.5 leading-none">
+        <span className="text-[8px] font-semibold tracking-[0.25em] text-white/35" style={{ fontFamily: "var(--font-cond)" }}>
+          AT
+        </span>
+        <span className="text-base font-bold text-white/35" style={NUM_FONT}>
+          {slot}
+        </span>
+      </div>
+      <div className="relative min-h-0 flex-1 px-1 pt-1">
+        <div className="flex h-full w-full items-center justify-center rounded-md bg-black/25">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.22)" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.6" />
+            <path d="M4.5 20c1.2-3.6 4-5.4 7.5-5.4s6.3 1.8 7.5 5.4" />
+          </svg>
+        </div>
+      </div>
+      <div className="px-1 pb-1 pt-1.5">
+        <div
+          className="truncate rounded-sm border border-dashed border-white/15 bg-white/[0.04] px-1 py-1 text-center text-[11px] font-bold uppercase leading-tight tracking-wide text-white/35"
+          style={{ fontFamily: "var(--font-cond)" }}
+        >
+          To be named
+        </div>
+        <div className="flex justify-center py-1 text-white/25">
+          <span className="text-[11px] font-bold tracking-widest" style={{ fontFamily: "var(--font-cond)" }}>—</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /**
  * Full-screen broadcast-TV "OFFICIAL PLAYING XI" reveal, modelled on the
  * IPL telecast graphic: glowing masthead with the club crest, the captain
@@ -183,7 +221,8 @@ export function BroadcastOverlay({
   const st = validateXI(xi);
   const capEntry = ordered.find((e) => e.p.id === captainId);
   const featured = capEntry ?? ordered[0];
-  const others = ordered.filter((e) => e !== featured);
+  /** every batting slot 1–11 except the featured card's — gaps become placeholders */
+  const restSlots = Array.from({ length: 11 }, (_, i) => i + 1).filter((s) => s !== featured?.slot);
   const wk = xi.find((p) => p.role === "WK");
 
   return (
@@ -267,7 +306,7 @@ export function BroadcastOverlay({
                 className="mt-1.5 truncate text-[11px] font-semibold uppercase tracking-[0.3em] text-white/55 sm:text-xs"
                 style={{ fontFamily: "var(--font-cond)" }}
               >
-                {team.name} · Official Playing XI
+                {team.name} · {xi.length === 11 ? "Official Playing XI" : `Playing XI — ${xi.length}/11 announced`}
               </div>
             </div>
             <div className="ml-auto hidden flex-col items-end gap-1.5 sm:flex">
@@ -312,10 +351,15 @@ export function BroadcastOverlay({
               </div>
             )}
 
-            {/* the other ten, in slot order */}
-            {others.map((e, i) => (
-              <PlayerCard key={e.p.id} p={e.p} slot={e.slot} delay={0.16 + i * 0.07} team={team} />
-            ))}
+            {/* the other ten, in slot order — empty slots show placeholders */}
+            {restSlots.map((s, i) => {
+              const e = ordered.find((x) => x.slot === s);
+              return e ? (
+                <PlayerCard key={s} p={e.p} slot={s} delay={0.16 + i * 0.07} team={team} />
+              ) : (
+                <EmptyCard key={s} slot={s} delay={0.16 + i * 0.07} />
+              );
+            })}
 
             {/* substitutes rail */}
             <div

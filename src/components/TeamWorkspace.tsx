@@ -901,8 +901,8 @@ export function TeamWorkspace({
                   ⚡ Auto-Pick XI (AI)
                 </button>
                 <button
-                  onClick={() => st.valid && setOnAir(true)}
-                  disabled={!st.valid}
+                  onClick={() => picked > 0 && setOnAir(true)}
+                  disabled={!picked}
                   className='rounded-lg px-3 py-2.5 text-sm font-bold uppercase tracking-widest transition-transform enabled:hover:scale-[1.02] disabled:opacity-40'
                   style={{
                     fontFamily: "var(--font-cond)",
@@ -910,9 +910,9 @@ export function TeamWorkspace({
                     color: team.ink,
                   }}
                   title={
-                    st.valid
-                      ? "Show the broadcast playing-XI graphic"
-                      : "Complete a valid XI first"
+                    picked
+                      ? "Show the broadcast playing-XI graphic — empty slots appear as placeholders"
+                      : "Pick at least one player first"
                   }>
                   📺 View Playing XI
                 </button>
