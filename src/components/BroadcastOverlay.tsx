@@ -356,11 +356,13 @@ export function BroadcastOverlay({
               >
                 {[0, 1].map((k) => (
                   <span key={k} className="flex gap-10">
+                    <span>Shami &amp; Siddharth → RR · Sam Curran → LSG (Nov 17)</span>
+                    <span>Harshal Patel → GT (Nov 17)</span>
                     <span>Hardik Pandya → PBKS · Arshdeep Singh → MI (Nov 11)</span>
                     <span>Livingstone &amp; Edwards → CSK · Khaleel &amp; Ellis → SRH (Nov 5)</span>
                     <span>Natarajan → SRH · Zeeshan Ansari → DC (Oct 14)</span>
                     <span>Pant → DC · Kuldeep Yadav → LSG (Jun 23)</span>
-                    <span>Retention deadline: 17 Nov 2026 · Mini auction: 16 Dec 2026, Goa</span>
+                    <span>Retentions locked 17 Nov 2026 · 184 retained, 89 released · Mini auction: 16 Dec 2026, Goa</span>
                   </span>
                 ))}
               </div>

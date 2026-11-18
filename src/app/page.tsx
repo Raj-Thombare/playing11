@@ -72,7 +72,7 @@ export default function Home() {
               🏟 {LEAGUE_STATS.totalPlayers} players · {LEAGUE_STATS.overseas} overseas
             </span>
             <span className="plate px-3 py-2" style={{ fontFamily: "var(--font-cond)" }}>
-              🔁 4 confirmed 2027 trades · 10 players moved
+              🔁 6 confirmed 2027 trades · 14 players moved
             </span>
             <span className="plate px-3 py-2" style={{ fontFamily: "var(--font-cond)", color: "#8fd694" }}>
               ✅ All squads fit — 2026 injuries recovered for 2027

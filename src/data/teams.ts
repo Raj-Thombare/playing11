@@ -82,18 +82,18 @@ export const TEAMS: Team[] = [
     titles: 5, titleYears: [2013, 2015, 2017, 2019, 2020],
     captainNote: "Hardik Pandya (captain 2024-26) traded to PBKS on Nov 11. New captain not yet announced — Rohit Sharma linked.",
     coach: "Kieron Pollard",
-    payroll: 124.35, purse: 130, rosterSize: 25, overseasCount: 7,
-    statusLine: "Traded Hardik Pandya to PBKS; signed Arshdeep Singh. De Kock, Santner & Bawa back fit after missing 2026. Captaincy pending.",
+    payroll: 97.4, purse: 130, rosterSize: 16, overseasCount: 6,
+    statusLine: "Retained 16 incl. Arshdeep (T); released Boult, Chahar & Markande. 9 slots & ₹32.60 Cr for Goa. Captaincy pending.",
   },
   {
     id: "CSK", name: "Chennai Super Kings", nameHi: "चेन्नई सुपर किंग्स", short: "CSK", city: "Chennai", venue: "M. A. Chidambaram Stadium",
     c1: "#d8a400", c2: "#f6cc1b", ink: "#123458",
     titles: 5, titleYears: [2010, 2011, 2018, 2021, 2023],
     captain: "Ruturaj Gaikwad", captainSince: "2024",
-    captainNote: "Gaikwad retained as captain with Sanju Samson now keeping alongside MS Dhoni. Continuity confirmed.",
+    captainNote: "Gaikwad retained as captain with Sanju Samson keeping. Dhoni retired from playing and moved into a mentor role (Nov 2026).",
     coach: "Stephen Fleming",
-    payroll: 123.85, purse: 130, rosterSize: 27, overseasCount: 10,
-    statusLine: "Roster 27/25 & 10/8 overseas — mandatory cuts due at the Nov 17 deadline after the SRH four-player swap.",
+    payroll: 101.95, purse: 130, rosterSize: 19, overseasCount: 6,
+    statusLine: "Retained 19 incl. Livingstone & Edwards (T) plus trade-window signing Jamie Overton; released Henry, Short, Madhwal & 7 more. 6 slots & ₹28.05 Cr for Goa.",
   },
   {
     id: "RCB", name: "Royal Challengers Bengaluru", nameHi: "रॉयल चैलेंजर्स बेंगलुरु", short: "RCB", city: "Bengaluru", venue: "M. Chinnaswamy Stadium",
@@ -102,8 +102,8 @@ export const TEAMS: Team[] = [
     captain: "Rajat Patidar", captainSince: "2025",
     captainNote: "Defending champion captain after lifting back-to-back titles (beat GT by 5 wickets in the 2026 final).",
     coach: "Andy Flower",
-    payroll: 117.15, purse: 130, rosterSize: 23, overseasCount: 7,
-    statusLine: "Champions of 2025 and 2026. Settled core; ₹12.85 Cr+ purse room for the Goa mini auction.",
+    payroll: 115.85, purse: 130, rosterSize: 20, overseasCount: 7,
+    statusLine: "Retained a league-most 7 overseas among 20; released Gleeson, Swapnil & Mangesh. ₹14.15 Cr and 5 slots for Goa.",
   },
   {
     id: "KKR", name: "Kolkata Knight Riders", nameHi: "कोलकाता नाइट राइडर्स", short: "KKR", city: "Kolkata", venue: "Eden Gardens",
@@ -111,8 +111,8 @@ export const TEAMS: Team[] = [
     titles: 3, titleYears: [2012, 2014, 2024],
     captainNote: "Ajinkya Rahane captained 2026, then retired from IPL cricket in July 2026. New captain to be named.",
     coach: "Chandrakant Pandit",
-    payroll: 86.95, purse: 130, rosterSize: 24, overseasCount: 7,
-    statusLine: "Rahane retired post-2026. Biggest war chest in the league — ₹43 Cr+ available for Goa.",
+    payroll: 88.35, purse: 130, rosterSize: 17, overseasCount: 5,
+    statusLine: "Retained 17; released Akash Deep, Pathirana, Umran, Saini & Rachin. ₹41.65 Cr — second-biggest war chest for Goa.",
   },
   {
     id: "DC", name: "Delhi Capitals", nameHi: "दिल्ली कैपिटल्स", short: "DC", city: "Delhi", venue: "Arun Jaitley Stadium",
@@ -121,8 +121,8 @@ export const TEAMS: Team[] = [
     captain: "Axar Patel", captainSince: "2025",
     captainNote: "Axar retained as captain. Rishabh Pant returned home via trade but no captaincy change announced.",
     coach: "Hemang Badani",
-    payroll: 111.55, purse: 130, rosterSize: 25, overseasCount: 8,
-    statusLine: "Pant & Ansari in; Kuldeep & Natarajan out across two trades. Overseas slots maxed at 8/8.",
+    payroll: 90.5, purse: 130, rosterSize: 16, overseasCount: 4,
+    statusLine: "Retained 16 incl. Pant & Ansari (T); released Starc, Rana, Porel & Chameera. ₹39.50 Cr and 9 slots for Goa.",
   },
   {
     id: "PBKS", name: "Punjab Kings", nameHi: "पंजाब किंग्स", short: "PBKS", city: "Chandigarh", venue: "Maharaja Yadavindra Singh Stadium, New Chandigarh",
@@ -131,8 +131,8 @@ export const TEAMS: Team[] = [
     captain: "Shreyas Iyer", captainSince: "2025",
     captainNote: "Iyer stays captain. 2025 finalists; 2026 runners-up again under Ricky Ponting.",
     coach: "Ricky Ponting",
-    payroll: 121.5, purse: 130, rosterSize: 25, overseasCount: 8,
-    statusLine: "Landed Hardik Pandya (₹18 Cr) for Arshdeep Singh on Nov 11. Iyer remains established captain.",
+    payroll: 111.4, purse: 130, rosterSize: 19, overseasCount: 6,
+    statusLine: "Landed Hardik Pandya (₹18 Cr) on Nov 11, then retained 19; released Ferguson, Owen & Wadhera. ₹18.60 Cr for Goa.",
   },
   {
     id: "RR", name: "Rajasthan Royals", nameHi: "राजस्थान रॉयल्स", short: "RR", city: "Jaipur", venue: "Sawai Mansingh Stadium",
@@ -141,8 +141,8 @@ export const TEAMS: Team[] = [
     captain: "Riyan Parag", captainSince: "2026",
     captainNote: "Parag's first full season as captain in 2026 after Sanju Samson's trade to CSK. Continues into 2027.",
     coach: "Rahul Dravid",
-    payroll: 117.3, purse: 130, rosterSize: 25, overseasCount: 8,
-    statusLine: "No 2027 trades. Samson-era rebuild continued with Jadeja backing new skipper Parag.",
+    payroll: 102.95, purse: 130, rosterSize: 19, overseasCount: 5,
+    statusLine: "Traded in Shami (₹8 Cr) & Siddharth from LSG, sent Sam Curran out; retained 19 — released Deshpande, Milne & Sen. ₹27.05 Cr for Goa.",
   },
   {
     id: "SRH", name: "Sunrisers Hyderabad", nameHi: "सनराइजर्स हैदराबाद", short: "SRH", city: "Hyderabad", venue: "Rajiv Gandhi International Stadium",
@@ -151,8 +151,8 @@ export const TEAMS: Team[] = [
     captain: "Pat Cummins", captainSince: "2024",
     captainNote: "Cummins retained as captain; busy trade window rebuilt the pace attack around him.",
     coach: "Daniel Vettori",
-    payroll: 115.95, purse: 130, rosterSize: 26, overseasCount: 8,
-    statusLine: "Traded in Natarajan, Khaleel & Ellis; sent out Livingstone, Edwards & Ansari. Roster 26/25 — one cut required.",
+    payroll: 89.85, purse: 130, rosterSize: 18, overseasCount: 5,
+    statusLine: "Traded Harshal Patel to GT (₹4 Cr); retained 18 — released Head, Unadkat & Mendis. ₹40.15 Cr and 7 slots for Goa.",
   },
   {
     id: "GT", name: "Gujarat Titans", nameHi: "गुजरात टाइटन्स", short: "GT", city: "Ahmedabad", venue: "Narendra Modi Stadium",
@@ -161,8 +161,8 @@ export const TEAMS: Team[] = [
     captain: "Shubman Gill", captainSince: "2024",
     captainNote: "Gill continues. GT lost the 2026 final to RCB by five wickets.",
     coach: "Ashish Nehra",
-    payroll: 121.8, purse: 130, rosterSize: 25, overseasCount: 7,
-    statusLine: "No trades. 2026 runners-up core intact around Gill, Rashid and Siraj.",
+    payroll: 121.25, purse: 130, rosterSize: 22, overseasCount: 6,
+    statusLine: "Traded in Harshal Patel (₹4 Cr) from SRH; retained a league-high 22. Smallest purse left — ₹8.75 Cr for Goa.",
   },
   {
     id: "LSG", name: "Lucknow Super Giants", nameHi: "लखनऊ सुपर जायंट्स", short: "LSG", city: "Lucknow", venue: "Ekana Cricket Stadium",
@@ -170,12 +170,30 @@ export const TEAMS: Team[] = [
     titles: 0, titleYears: [],
     captainNote: "Pant captained LSG in 2025-26, then was traded to DC. Next captain not yet announced — Pooran the natural pick.",
     coach: "Justin Langer",
-    payroll: 102.55, purse: 130, rosterSize: 24, overseasCount: 6,
-    statusLine: "Traded Pant to DC, brought in Kuldeep Yadav. Marsh & Hasaranga back fit after missing 2026. ₹27 Cr+ purse left for Goa.",
+    payroll: 82.55, purse: 130, rosterSize: 18, overseasCount: 5,
+    statusLine: "Sent Shami & Siddharth to RR, brought in Sam Curran (₹2.4 Cr); retained 18 — released Avesh, Nortje & Hasaranga. League-best ₹47.45 Cr for Goa.",
   },
 ];
 
 export const TRADES: Trade[] = [
+  {
+    date: "2026-11-17",
+    title: "Shami & Siddharth to RR; Curran to LSG",
+    moves: [
+      { name: "Mohammed Shami", from: "LSG", to: "RR", fee: 8, feeNote: "revised from ₹10 Cr" },
+      { name: "Manimaran Siddharth", from: "LSG", to: "RR", fee: 0.75, feeNote: "unchanged" },
+      { name: "Sam Curran", from: "RR", to: "LSG", fee: 2.4, feeNote: "unchanged" },
+    ],
+    summary: "RR stacked a new-ball pairing of Archer and Shami on deadline day; Lucknow added Curran's all-round depth. Confirmed Nov 17, 2026.",
+  },
+  {
+    date: "2026-11-17",
+    title: "Harshal Patel to GT",
+    moves: [
+      { name: "Harshal Patel", from: "SRH", to: "GT", fee: 4, feeNote: "revised from ₹8 Cr" },
+    ],
+    summary: "The two-time Purple Cap winner joined the 2026 runners-up to spearhead the death overs alongside Rashid Khan. Confirmed Nov 17, 2026.",
+  },
   {
     date: "2026-11-11",
     title: "Blockbuster swap: Hardik ↔ Arshdeep",
@@ -217,7 +235,7 @@ export const TRADES: Trade[] = [
 ];
 
 export const SEASON_CONTEXT = {
-  today: "2026-11-17",
+  today: "2026-11-18",
   retentionDeadline: "17 Nov 2026",
   auctionDate: "16 Dec 2026",
   auctionVenue: "Goa",
@@ -225,7 +243,7 @@ export const SEASON_CONTEXT = {
   prunedList: "3 Dec 2026",
   lastChampion: "Royal Challengers Bengaluru (2026, defended 2025 title; beat GT by 5 wkts in final)",
   note:
-    "Mini-auction cycle: unlimited retentions inside the ₹130 Cr purse, exact contract fees deducted, no RTM cards. Squads cap at 25 players, 8 overseas. Injured core players (de Kock, Marsh, Pathirana and others) keep their contracts — teams are not required to release them; only voluntary cuts free purse.",
+    "Retentions locked on 17 Nov 2026: 184 players retained (55 overseas), 89 released. Mini-auction on 16 Dec 2026 in Goa — unlimited retentions inside the ₹130 Cr purse, exact contract fees deducted, no RTM cards. Squads cap at 25 players, 8 overseas.",
 };
 
 export function teamById(id: string): Team | undefined {
