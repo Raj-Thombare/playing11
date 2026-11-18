@@ -251,7 +251,7 @@ export function BroadcastOverlay({
               window.setTimeout(() => setCopied(false), 2200);
             }}
             aria-label='Copy reveal link'
-            className='rounded-full border px-4 py-2 text-sm font-semibold uppercase tracking-widest hover:brightness-110'
+            className='rounded-full border px-4 py-3 text-sm font-semibold uppercase tracking-widest hover:brightness-110'
             style={{
               fontFamily: "var(--font-cond)",
               borderColor: copied
@@ -269,7 +269,7 @@ export function BroadcastOverlay({
         <button
           onClick={onClose}
           aria-label='Close broadcast view'
-          className='rounded-full border border-white/20 bg-black/50 px-4 py-2 text-sm font-semibold uppercase tracking-widest hover:bg-black/70'
+          className='rounded-full border border-white/20 bg-black/50 px-4 py-3 text-sm font-semibold uppercase tracking-widest hover:bg-black/70'
           style={{ fontFamily: "var(--font-cond)" }}>
           ✕ Close
         </button>
@@ -353,11 +353,11 @@ export function BroadcastOverlay({
           </div>
 
           {/* body: featured captain · 10 numbered cards · substitutes rail */}
-          <div className='relative grid gap-2 p-3 sm:grid-cols-3 sm:gap-2.5 lg:h-[600px] lg:grid-cols-[200px_repeat(5,minmax(0,1fr))_238px] lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)] lg:p-4'>
+          <div className='relative grid grid-cols-1 gap-2 p-3 sm:grid-cols-3 sm:gap-2.5 lg:h-[600px] lg:grid-cols-[200px_repeat(5,minmax(0,1fr))_238px] lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)] lg:p-4'>
             {/* featured captain */}
             {featured && (
               <div
-                className='anim-up relative col-span-2 flex h-80 flex-col overflow-hidden rounded-xl border-2 sm:col-span-3 lg:col-span-1 lg:row-span-2 lg:h-auto'
+                className='anim-up relative flex h-80 flex-col overflow-hidden rounded-xl border-2 sm:col-span-3 lg:col-span-1 lg:row-span-2 lg:h-auto'
                 style={{
                   ...burst(team.c2, team.c1),
                   borderColor: "rgba(243,207,111,.5)",
@@ -509,7 +509,7 @@ export function BroadcastOverlay({
             ].map(([label, value, color]) => (
               <div key={label as string}>
                 <div
-                  className='text-[9px] uppercase tracking-[0.25em] text-white/40'
+                  className='text-[11px] uppercase tracking-[0.25em] text-white/40'
                   style={{ fontFamily: "var(--font-cond)" }}>
                   {label}
                 </div>

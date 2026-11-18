@@ -278,17 +278,17 @@ const Slot = memo(function Slot({
         <button
           onClick={() => onCaptain(player.id)}
           title="Set as captain"
-          className={`h-6 w-6 rounded ${isCap ? "text-amber-300" : "text-white/35 hover:text-white"}`}
+          className={`h-11 w-11 rounded ${isCap ? "text-amber-300" : "text-white/35 hover:text-white"}`}
         >
           ★
         </button>
-        <button onClick={() => onMove(i, -1)} title="Move up / swap with slot above" className="h-6 w-6 rounded text-white/40 hover:text-white">
+        <button onClick={() => onMove(i, -1)} title="Move up / swap with slot above" className="h-11 w-11 rounded text-white/40 hover:text-white">
           ↑
         </button>
-        <button onClick={() => onMove(i, 1)} title="Move down / swap with slot below" className="h-6 w-6 rounded text-white/40 hover:text-white">
+        <button onClick={() => onMove(i, 1)} title="Move down / swap with slot below" className="h-11 w-11 rounded text-white/40 hover:text-white">
           ↓
         </button>
-        <button onClick={() => onRemove(player.id)} title="Remove from XI (or drag back to the squad)" className="h-6 w-6 rounded text-red-300/70 hover:text-red-300">
+        <button onClick={() => onRemove(player.id)} title="Remove from XI (or drag back to the squad)" className="h-11 w-11 rounded text-red-300/70 hover:text-red-300">
           ✕
         </button>
       </div>
@@ -381,7 +381,7 @@ const ImpactSlot = memo(function ImpactSlot({
           <button
             onClick={() => onSet(null)}
             title="Clear impact player"
-            className="ml-auto h-7 w-7 shrink-0 rounded-full text-sm text-red-300/70 hover:bg-red-400/10 hover:text-red-300"
+            className="ml-auto h-11 w-11 shrink-0 rounded-full text-sm text-red-300/70 hover:bg-red-400/10 hover:text-red-300"
           >
             ✕
           </button>
@@ -506,7 +506,7 @@ const PlayerRow = memo(function PlayerRow({
       <button
         onClick={() => onToggle(p.id)}
         disabled={disabled}
-        className={`h-7 w-7 shrink-0 rounded-full border text-sm font-bold transition-colors ${
+        className={`h-11 w-11 shrink-0 rounded-full border text-sm font-bold transition-colors ${
           inXI
             ? "border-red-400/40 text-red-300 hover:bg-red-400/10"
             : "border-white/25 text-white/80 enabled:hover:bg-white/10 disabled:cursor-not-allowed"
