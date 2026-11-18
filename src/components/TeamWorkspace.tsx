@@ -969,7 +969,7 @@ export function TeamWorkspace({
 
       {/* ================= BUILDER ================= */}
       {tab === "builder" && (
-        <div className='mt-4 grid gap-4 lg:grid-cols-5'>
+        <div className='mt-4 grid gap-4 pb-44 sm:pb-0 lg:grid-cols-5'>
           {/* pool */}
           <div className='lg:col-span-3'>
             <div className='plate p-3'>
@@ -1061,7 +1061,7 @@ export function TeamWorkspace({
               className='plate sticky top-4 p-3'
               style={{ boxShadow: `0 30px 80px -40px ${team.c1}` }}>
               <div
-                className='sheen flex items-center justify-between rounded-lg px-3 py-2'
+                className='sheen hidden sm:flex items-center justify-between rounded-lg px-3 py-2'
                 style={{
                   background: `linear-gradient(100deg, ${team.c1}, ${team.c2})`,
                 }}>
@@ -1081,7 +1081,7 @@ export function TeamWorkspace({
                 </span>
               </div>
               <p
-                className='mt-2 px-1 text-[11px] uppercase tracking-widest text-white/35'
+                className='mt-2 hidden sm:block px-1 text-[11px] uppercase tracking-widest text-white/35'
                 style={{ fontFamily: "var(--font-cond)" }}>
                 Drag between slots to reorder · drop a player on a filled slot
                 to swap · use the ⚡ Impact card for the 12th
@@ -1106,38 +1106,7 @@ export function TeamWorkspace({
                 ))}
               </div>
 
-              {/* Mobile: two rows of chips — 6 in row 1, 5 + impact in row 2 */}
-              <div className='mt-2 sm:hidden flex flex-col gap-2 items-center'>
-                <div className='flex items-center gap-1.5 justify-center'>
-                  {Array.from({ length: 6 }, (_, i) => (
-                    <XIChip
-                      key={i}
-                      n={i + 1}
-                      player={slots[i] ? byId.get(slots[i] as string) : undefined}
-                      isCap={!!slots[i] && slots[i] === captainId}
-                      team={team}
-                    />
-                  ))}
-                </div>
-                <div className='flex items-center gap-1.5 justify-center'>
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <XIChip
-                      key={i}
-                      n={i + 7}
-                      player={slots[i + 6] ? byId.get(slots[i + 6] as string) : undefined}
-                      isCap={!!slots[i + 6] && slots[i + 6] === captainId}
-                      team={team}
-                    />
-                  ))}
-                  <XIChip
-                    key='impact'
-                    player={impactPlayer}
-                    team={team}
-                    impact
-                    onSet={setImpact}
-                  />
-                </div>
-              </div>
+              {/* Desktop impact slot (hidden on mobile — chip row is in the fixed bottom bar) */}
               <div className='hidden sm:block'>
                 <ImpactSlot
                   player={impactPlayer}
@@ -1148,7 +1117,8 @@ export function TeamWorkspace({
                   onDragEnd={onDragEnd}
                 />
               </div>
-              <div className='mt-3'>
+              {/* Desktop validation strips (hidden on mobile — moved to fixed bottom bar) */}
+              <div className='hidden sm:block mt-3'>
                 <ValidationStrip checks={st.count} />
               </div>
               <div className='mt-3'>
@@ -1168,7 +1138,7 @@ export function TeamWorkspace({
                 <button
                   onClick={() => picked > 0 && setOnAir(true)}
                   disabled={!picked}
-                  className='rounded-lg px-3 py-2.5 text-sm font-bold uppercase tracking-widest transition-transform enabled:hover:scale-[1.02] disabled:opacity-40'
+                  className='hidden sm:block rounded-lg px-3 py-2.5 text-sm font-bold uppercase tracking-widest transition-transform enabled:hover:scale-[1.02] disabled:opacity-40'
                   style={{
                     fontFamily: "var(--font-cond)",
                     background: `linear-gradient(100deg, ${team.c1}, ${team.c2})`,
@@ -1679,6 +1649,75 @@ export function TeamWorkspace({
           shareHref={revealHref}
           onClose={() => setOnAir(false)}
         />
+      )}
+
+      {/* Mobile fixed bottom bar — Playing XI chips + validation + Review XI */}
+      {tab === "builder" && (
+        <div className='fixed bottom-0 left-0 right-0 z-50 sm:hidden border-t border-white/10 bg-[#0a1628]/95 backdrop-blur px-3 pt-2 pb-3'>
+          {/* Header row */}
+          <div className='flex items-center justify-between gap-2 mb-2'>
+            <span
+              className='text-lg font-bold uppercase tracking-widest text-white'
+              style={{ fontFamily: "var(--font-display)" }}>
+              Playing XI{' '}
+              <span style={{ color: '#f59e0b' }}>{picked}/11</span>
+            </span>
+            <button
+              onClick={() => picked > 0 && setOnAir(true)}
+              disabled={!picked}
+              className='rounded-lg px-4 py-2 text-sm font-bold uppercase tracking-widest transition-transform enabled:hover:scale-[1.02] disabled:opacity-40'
+              style={{
+                fontFamily: "var(--font-cond)",
+                background: `linear-gradient(100deg, ${team.c1}, ${team.c2})`,
+                color: team.ink,
+              }}
+              title={
+                picked
+                  ? "Show the broadcast playing-XI graphic — empty slots appear as placeholders"
+                  : "Pick at least one player first"
+              }>
+              Review XI
+            </button>
+          </div>
+
+          {/* Two-row chips — 6 in row 1, 5 + impact in row 2 */}
+          <div className='flex flex-col gap-1.5 items-center'>
+            <div className='flex items-center gap-1.5 justify-center'>
+              {Array.from({ length: 6 }, (_, i) => (
+                <XIChip
+                  key={i}
+                  n={i + 1}
+                  player={slots[i] ? byId.get(slots[i] as string) : undefined}
+                  isCap={!!slots[i] && slots[i] === captainId}
+                  team={team}
+                />
+              ))}
+            </div>
+            <div className='flex items-center gap-1.5 justify-center'>
+              {Array.from({ length: 5 }, (_, i) => (
+                <XIChip
+                  key={i}
+                  n={i + 7}
+                  player={slots[i + 6] ? byId.get(slots[i + 6] as string) : undefined}
+                  isCap={!!slots[i + 6] && slots[i + 6] === captainId}
+                  team={team}
+                />
+              ))}
+              <XIChip
+                key='impact'
+                player={impactPlayer}
+                team={team}
+                impact
+                onSet={setImpact}
+              />
+            </div>
+          </div>
+
+          {/* Validation strips */}
+          <div className='mt-2'>
+            <ValidationStrip checks={st.count} />
+          </div>
+        </div>
       )}
     </div>
   );
