@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { Player, Role, Team } from "@/data/teams";
 import { PlayerPhoto } from "./PlayerPhoto";
 import { TeamLogo } from "./TeamLogo";
-import { fmtPrice, validateXI } from "@/lib/xi";
+import { fmtPrice, ROLE_LABEL, validateXI } from "@/lib/xi";
 import { copyToClipboard } from "@/lib/share";
 
 const NUM_FONT: React.CSSProperties = {
@@ -193,6 +193,7 @@ export function BroadcastOverlay({
   ordered,
   captainId,
   subs,
+  impactPlayer,
   shareHref,
   onClose,
 }: {
@@ -202,6 +203,8 @@ export function BroadcastOverlay({
   captainId?: string | null;
   /** bench options: highest-contract players not in the XI */
   subs: Player[];
+  /** optional 12th / Impact Player */
+  impactPlayer?: Player;
   /** reveal link (opens this overlay for whoever clicks it) */
   shareHref?: string;
   onClose: () => void;
@@ -372,15 +375,57 @@ export function BroadcastOverlay({
               >
                 Substitutes
               </div>
+              {impactPlayer && (
+                <div className="m-2 rounded-lg border border-amber-300/40 bg-amber-300/10 p-2">
+                  <div
+                    className="text-center text-[10px] font-bold uppercase tracking-[0.25em] text-amber-200/80"
+                    style={{ fontFamily: "var(--font-cond)" }}
+                  >
+                    ⚡ Impact Player (12th)
+                  </div>
+                  <div className="mt-1.5 flex items-center gap-2.5 px-1.5">
+                    <PlayerPhoto
+                      player={impactPlayer}
+                      c1={team.c1}
+                      c2={team.c2}
+                      ink={team.ink}
+                      size={38}
+                      ring={false}
+                    />
+                    <div className="min-w-0">
+                      <div className="truncate text-sm font-bold uppercase leading-tight text-white/95" style={{ fontFamily: "var(--font-cond)" }}>
+                        {impactPlayer.name}
+                      </div>
+                      <div className="text-[10px] uppercase tracking-wider text-white/50">
+                        {ROLE_LABEL[impactPlayer.role]} · {fmtPrice(impactPlayer.price)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="flex-1 divide-y divide-white/10 overflow-y-auto">
                 {subs.map((p) => (
-                  <div key={p.id} className="flex items-center gap-2.5 px-3.5 py-3">
-                    <span className="shrink-0 text-white/90">
-                      <RoleGlyph role={p.role} size={18} />
-                    </span>
-                    <span className="text-sm font-semibold leading-tight text-white/95" style={{ fontFamily: "var(--font-cond)" }}>
-                      {p.name}
-                    </span>
+                  <div key={p.id} className="flex items-center gap-2.5 px-3.5 py-2.5">
+                    <PlayerPhoto
+                      player={p}
+                      c1={team.c1}
+                      c2={team.c2}
+                      ink={team.ink}
+                      size={38}
+                      ring={false}
+                    />
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-1.5">
+                        <span className="truncate text-sm font-semibold leading-tight text-white/95" style={{ fontFamily: "var(--font-cond)" }}>
+                          {p.name}
+                        </span>
+                        {p.overseas && <span className="text-[10px] text-sky-300">✈</span>}
+                      </div>
+                      <div className="mt-0.5 flex items-center gap-1 text-[10px] uppercase tracking-wider text-white/50" style={{ fontFamily: "var(--font-cond)" }}>
+                        <RoleGlyph role={p.role} size={12} />
+                        {ROLE_LABEL[p.role]} · <span className="text-amber-200/85">{fmtPrice(p.price)}</span>
+                      </div>
+                    </div>
                   </div>
                 ))}
                 {subs.length === 0 && <div className="px-3.5 py-4 text-sm text-white/40">Bench listed at the toss.</div>}

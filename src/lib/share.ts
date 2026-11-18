@@ -8,6 +8,7 @@ import type { Player, Team } from "@/data/teams";
  *   - slots are comma-joined in slot order (1–11); an empty slot is "~"
  *   - trailing empty slots are trimmed
  *   - `cap` carries the captain's player id (optional)
+ *   - `impact` carries the 12th / Impact Player's id (optional)
  *   - `view=reveal` makes the link open straight into the broadcast overlay
  */
 
@@ -36,16 +37,27 @@ export function decodeSlots(raw: string): (string | null)[] {
   return out;
 }
 
-export function sharePath(teamId: string, slots: (string | null)[], captainId?: string | null): string {
+export function sharePath(
+  teamId: string,
+  slots: (string | null)[],
+  captainId?: string | null,
+  impactId?: string | null
+): string {
   const params = new URLSearchParams();
   params.set("xi", encodeSlots(slots));
   if (captainId) params.set("cap", captainId);
+  if (impactId) params.set("impact", impactId);
   return `/team/${teamId}?${params.toString()}`;
 }
 
 /** absolute share URL (empty string during SSR — never rendered as text) */
-export function shareUrl(teamId: string, slots: (string | null)[], captainId?: string | null): string {
-  const path = sharePath(teamId, slots, captainId);
+export function shareUrl(
+  teamId: string,
+  slots: (string | null)[],
+  captainId?: string | null,
+  impactId?: string | null
+): string {
+  const path = sharePath(teamId, slots, captainId, impactId);
   if (typeof window === "undefined") return path;
   try {
     return new URL(path, window.location.origin).toString();
@@ -58,8 +70,13 @@ export function shareUrl(teamId: string, slots: (string | null)[], captainId?: s
  *  The recipient sees only the on-air graphic until they close it, then lands
  *  in the builder with the shared XI loaded (read-only — their own saved XI is
  *  untouched). */
-export function revealUrl(teamId: string, slots: (string | null)[], captainId?: string | null): string {
-  const url = shareUrl(teamId, slots, captainId);
+export function revealUrl(
+  teamId: string,
+  slots: (string | null)[],
+  captainId?: string | null,
+  impactId?: string | null
+): string {
+  const url = shareUrl(teamId, slots, captainId, impactId);
   return url.includes("?") ? `${url}&view=reveal` : `${url}?view=reveal`;
 }
 

@@ -294,6 +294,95 @@ const Slot = memo(function Slot({
   );
 });
 
+const ImpactSlot = memo(function ImpactSlot({
+  player,
+  team,
+  dragActive,
+  onSet,
+  onDragStart,
+  onDragEnd,
+}: {
+  player?: Player;
+  team: Team;
+  dragActive: string | null;
+  onSet: (id: string | null) => void;
+  onDragStart: (payload: DragPayload) => void;
+  onDragEnd: () => void;
+}) {
+  const [over, setOver] = useState(false);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    if (!dragActive) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    if (!over) setOver(true);
+  };
+  const handleDragLeave = (e: React.DragEvent) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+    setOver(false);
+  };
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setOver(false);
+    const d = readPayload(e);
+    if (d) onSet(d.id);
+  };
+
+  return (
+    <div
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+      className="mt-2 rounded-lg border border-dashed p-2 transition-colors"
+      style={{
+        borderColor: over ? team.c2 : player ? `${team.c2}77` : "rgba(255,255,255,.18)",
+        background: over ? `${team.c1}33` : player ? "rgba(255,200,60,.06)" : "rgba(255,255,255,.02)",
+      }}
+    >
+      <div className="mb-1.5 flex flex-wrap items-center gap-2">
+        <span className="text-xs font-bold uppercase tracking-widest" style={{ fontFamily: "var(--font-cond)", color: "#ffc75a" }}>
+          ⚡ Impact Player
+        </span>
+        <span className="chip" style={{ color: "rgba(255,255,255,.45)", fontSize: "0.68rem" }}>12th · optional</span>
+      </div>
+      <div className="flex items-center gap-2">
+        {player ? (
+          <>
+            <span
+              draggable
+              onDragStart={(e) => {
+                startDrag(e, { id: player.id, from: "slot" });
+                onDragStart({ id: player.id, from: "slot" });
+              }}
+              onDragEnd={onDragEnd}
+              className="shrink-0 cursor-grab"
+              title="Drag into any XI slot to promote"
+            >
+              <PlayerPhoto player={player} c1={team.c1} c2={team.c2} ink={team.ink} size={38} />
+            </span>
+            <span className="truncate text-sm font-semibold uppercase tracking-wide" style={{ fontFamily: "var(--font-cond)" }}>
+              {player.name}
+            </span>
+          </>
+        ) : (
+          <span className="text-sm text-white/40" style={{ fontFamily: "var(--font-cond)" }}>
+            {over ? "Drop to set impact player" : "Drag a player here to set impact"}
+          </span>
+        )}
+        {player && (
+          <button
+            onClick={() => onSet(null)}
+            title="Clear impact player"
+            className="ml-auto h-7 w-7 shrink-0 rounded-full text-sm text-red-300/70 hover:bg-red-400/10 hover:text-red-300"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+    </div>
+  );
+});
+
 const PlayerRow = memo(function PlayerRow({
   p,
   team,
@@ -447,6 +536,7 @@ export function TeamWorkspace({
   const [tab, setTab] = useState<Tab>("builder");
   const [slots, setSlots] = useState<Slots>(emptySlots);
   const [captainId, setCaptainId] = useState<string | null>(null);
+  const [impactId, setImpactId] = useState<string | null>(null);
   const [ai, setAi] = useState<AutoPickResult | null>(null);
   const [onAir, setOnAir] = useState(false);
   const [q, setQ] = useState("");
@@ -460,10 +550,10 @@ export function TeamWorkspace({
 
   /** copy a link that opens this XI straight in the on-air reveal */
   const copyRevealLink = useCallback(() => {
-    copyToClipboard(revealUrl(team.id, slots, captainId));
+    copyToClipboard(revealUrl(team.id, slots, captainId, impactId));
     setLinkCopied(true);
     window.setTimeout(() => setLinkCopied(false), 2200);
-  }, [team.id, slots, captainId]);
+  }, [team.id, slots, captainId, impactId]);
 
   /* ---- persistence (loads once, then only saves after hydration) ----
      A shared link (?xi=…&cap=…) wins over this browser's saved XI, so the
@@ -479,16 +569,25 @@ export function TeamWorkspace({
         decodeSlots(xiParam).forEach((id, i) => {
           if (!id) return;
           const p = byId.get(id);
-          next[i] = p && !p.retired && p.status !== "injured" && p.status !== "released" ? id : null;
+          next[i] = p && p.id !== params.get("impact") && !p.retired && p.status !== "injured" && p.status !== "released" ? id : null;
         });
         setSlots(next);
         setFromLink(true);
         const cap = params.get("cap");
         if (cap && byId.has(cap)) setCaptainId(cap);
+        const imp = params.get("impact");
+        if (imp) {
+          const p = byId.get(imp);
+          if (p && !p.retired && p.status !== "injured" && p.status !== "released") setImpactId(imp);
+        }
         if (params.get("view") === "reveal") setOnAir(true);
         setReady(true);
         return;
       }
+      const im = localStorage.getItem(`iplxi:impact:${team.id}`);
+      const impactFromStore = im && byId.has(im) ? im : null;
+      if (impactFromStore) setImpactId(impactFromStore);
+
       const s = localStorage.getItem(`iplxi:sel:${team.id}`);
       if (s) {
         const arr = JSON.parse(s) as (string | null)[];
@@ -497,7 +596,7 @@ export function TeamWorkspace({
           arr.slice(0, 11).forEach((id, i) => {
             if (!id) return;
             const p = byId.get(id);
-            next[i] = p && !p.retired && p.status !== "injured" && p.status !== "released" ? id : null;
+            next[i] = p && id !== impactFromStore && !p.retired && p.status !== "injured" && p.status !== "released" ? id : null;
           });
           setSlots(next);
         }
@@ -524,6 +623,14 @@ export function TeamWorkspace({
     } catch {}
   }, [captainId, ready, fromLink, team.id]);
 
+  useEffect(() => {
+    if (!ready || fromLink) return;
+    try {
+      if (impactId) localStorage.setItem(`iplxi:impact:${team.id}`, impactId);
+      else localStorage.removeItem(`iplxi:impact:${team.id}`);
+    } catch {}
+  }, [impactId, ready, fromLink, team.id]);
+
   /* ---- derived ---- */
   const xi = useMemo(
     () =>
@@ -548,13 +655,21 @@ export function TeamWorkspace({
   const subs = useMemo(
     () =>
       fit
-        .filter((p) => !slots.includes(p.id))
+        .filter((p) => !slots.includes(p.id) && p.id !== impactId)
         .sort((a, b) => b.price - a.price)
         .slice(0, 5),
-    [fit, slots]
+    [fit, slots, impactId]
   );
   /** reveal link — opens this XI straight in the on-air overlay */
-  const revealHref = useMemo(() => revealUrl(team.id, slots, captainId), [team.id, slots, captainId]);
+  const revealHref = useMemo(
+    () => revealUrl(team.id, slots, captainId, impactId),
+    [team.id, slots, captainId, impactId]
+  );
+  /** 12th / Impact Player — never counted in the XI validation */
+  const impactPlayer = useMemo(() => {
+    const p = impactId ? byId.get(impactId) : undefined;
+    return p && !p.retired && p.status !== "injured" && p.status !== "released" ? p : undefined;
+  }, [impactId, byId]);
   const picked = xi.length;
   const st = validateXI(xi);
   const captain = captainId ? byId.get(captainId)?.name : team.captain;
@@ -564,13 +679,21 @@ export function TeamWorkspace({
   const onDragStart = useCallback((payload: DragPayload) => setDragId(payload.id), []);
   const onDragEnd = useCallback(() => setDragId(null), []);
 
+  /** set / clear the Impact Player — a promoted impact player leaves the XI */
+  const setImpact = useCallback((id: string | null) => {
+    setSaved(false);
+    setImpactId(id);
+    if (id) setSlots((cur) => (cur.includes(id) ? cur.map((x) => (x === id ? null : x)) : cur));
+  }, []);
+
   /** drop a dragged player onto slot idx (from a slot or the pool) */
   const dropPlace = useCallback(
     (idx: number, id: string) => {
       setSaved(false);
+      if (id === impactId) setImpactId(null);
       setSlots((cur) => computePlace(cur, idx, id, byId) ?? cur);
     },
-    [byId]
+    [byId, impactId]
   );
 
   /** "＋" on a pool row → first empty slot (any order the user wants, arrows/DnD refine it) */
@@ -581,6 +704,7 @@ export function TeamWorkspace({
         const p = byId.get(id);
         if (!p || p.retired || p.status === "injured" || p.status === "released") return cur;
         if (cur.includes(id)) return cur.filter((x) => x !== id); // acts as "−" for XI players
+        if (id === impactId) setImpactId(null); // promoted from impact → XI
         const emptyIdx = cur.indexOf(null);
         if (emptyIdx === -1) return cur;
         const next = [...cur];
@@ -588,7 +712,7 @@ export function TeamWorkspace({
         return legalXI(next, byId) ? next : cur;
       });
     },
-    [byId]
+    [byId, impactId]
   );
 
   /** ✕ on a slot, or dropping a player back onto the squad */
@@ -611,6 +735,7 @@ export function TeamWorkspace({
 
   const reset = () => {
     setSlots(emptySlots());
+    setImpactId(null);
     setAi(null);
     setSaved(false);
   };
@@ -624,6 +749,7 @@ export function TeamWorkspace({
       next[i] = p.id;
     });
     setSlots(next);
+    setImpactId(null);
     if (!result.xi.some((p) => p.id === captainId)) setCaptainId(result.xi[0]?.id ?? null);
   };
 
@@ -789,8 +915,8 @@ export function TeamWorkspace({
               <p
                 className='mt-2 text-[11px] uppercase tracking-widest text-white/35'
                 style={{ fontFamily: "var(--font-cond)" }}>
-                Drag any player into any slot 1–11 — or drop him back here to
-                remove
+                Drag any player into slots 1–11 or the ⚡ Impact card — or drop
+                him back here to remove
               </p>
               <div className='mt-3 max-h-[70vh] space-y-4 overflow-y-auto pr-1'>
                 {grouped.map((g) => (
@@ -863,7 +989,7 @@ export function TeamWorkspace({
                 className='mt-2 px-1 text-[11px] uppercase tracking-widest text-white/35'
                 style={{ fontFamily: "var(--font-cond)" }}>
                 Drag between slots to reorder · drop a player on a filled slot
-                to swap
+                to swap · use the ⚡ Impact card for the 12th
               </p>
               <div className='mt-2 space-y-1.5'>
                 {Array.from({ length: 11 }, (_, i) => (
@@ -883,6 +1009,14 @@ export function TeamWorkspace({
                   />
                 ))}
               </div>
+              <ImpactSlot
+                player={impactPlayer}
+                team={team}
+                dragActive={dragId}
+                onSet={setImpact}
+                onDragStart={onDragStart}
+                onDragEnd={onDragEnd}
+              />
               <div className='mt-3'>
                 <ValidationStrip checks={st.count} />
               </div>
@@ -1410,6 +1544,7 @@ export function TeamWorkspace({
           ordered={ordered}
           captainId={captainId}
           subs={subs}
+          impactPlayer={impactPlayer}
           shareHref={revealHref}
           onClose={() => setOnAir(false)}
         />
