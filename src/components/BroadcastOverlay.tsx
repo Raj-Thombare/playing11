@@ -229,11 +229,20 @@ export function BroadcastOverlay({
   const wk = xi.find((p) => p.role === "WK");
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto" role="dialog" aria-label={`${team.name} playing eleven`}>
-      <div className="absolute inset-0" style={{ background: "radial-gradient(100% 80% at 50% -10%, rgba(23,64,128,.5), rgba(2,8,20,.96) 70%)" }} />
-      <div className="absolute inset-0 beams opacity-40" />
-      <div className="absolute inset-0 grain" />
-      <div className="fixed right-4 top-4 z-20 flex flex-col items-end gap-2">
+    <div
+      className='fixed inset-0 z-50 overflow-y-auto'
+      role='dialog'
+      aria-label={`${team.name} playing eleven`}>
+      <div
+        className='absolute inset-0'
+        style={{
+          background:
+            "radial-gradient(100% 80% at 50% -10%, rgba(23,64,128,.5), rgba(2,8,20,.96) 70%)",
+        }}
+      />
+      <div className='absolute inset-0 beams opacity-40' />
+      <div className='absolute inset-0 grain' />
+      <div className='fixed right-4 top-4 z-20 flex flex-col items-end gap-2'>
         {shareHref && (
           <button
             onClick={() => {
@@ -241,49 +250,51 @@ export function BroadcastOverlay({
               setCopied(true);
               window.setTimeout(() => setCopied(false), 2200);
             }}
-            aria-label="Copy reveal link"
-            className="rounded-full border px-4 py-2 text-sm font-semibold uppercase tracking-widest hover:brightness-110"
+            aria-label='Copy reveal link'
+            className='rounded-full border px-4 py-2 text-sm font-semibold uppercase tracking-widest hover:brightness-110'
             style={{
               fontFamily: "var(--font-cond)",
-              borderColor: copied ? "rgba(143,214,148,.6)" : "rgba(243,207,111,.55)",
-              background: copied ? "rgba(143,214,148,.15)" : "rgba(243,207,111,.12)",
+              borderColor: copied
+                ? "rgba(143,214,148,.6)"
+                : "rgba(243,207,111,.55)",
+              background: copied
+                ? "rgba(143,214,148,.15)"
+                : "rgba(243,207,111,.12)",
               color: copied ? "#8fd694" : "#f3cf6f",
             }}
-            title="Copy a link — whoever opens it sees this reveal full-screen"
-          >
+            title='Copy a link — whoever opens it sees this reveal full-screen'>
             {copied ? "🔗 Link copied ✓" : "🔗 Share"}
           </button>
         )}
         <button
           onClick={onClose}
-          aria-label="Close broadcast view"
-          className="rounded-full border border-white/20 bg-black/50 px-4 py-2 text-sm font-semibold uppercase tracking-widest hover:bg-black/70"
-          style={{ fontFamily: "var(--font-cond)" }}
-        >
+          aria-label='Close broadcast view'
+          className='rounded-full border border-white/20 bg-black/50 px-4 py-2 text-sm font-semibold uppercase tracking-widest hover:bg-black/70'
+          style={{ fontFamily: "var(--font-cond)" }}>
           ✕ Close
         </button>
       </div>
 
-      <div className="relative mx-auto w-full max-w-[1460px] px-3 pb-10 pt-5 sm:px-6">
+      <div className='relative mx-auto w-full max-w-[1460px] px-3 pb-10 pt-5 sm:px-6'>
         {/* the broadcast panel */}
         <div
-          className="anim-up relative overflow-hidden rounded-2xl border"
+          className='anim-up relative overflow-hidden rounded-2xl border'
           style={{
             borderColor: "rgba(243,207,111,.4)",
-            background: "linear-gradient(180deg, #0d2f63 0%, #08214a 48%, #04102a 100%)",
+            background:
+              "linear-gradient(180deg, #0d2f63 0%, #08214a 48%, #04102a 100%)",
             boxShadow: `0 50px 140px -50px ${team.c1}`,
-          }}
-        >
+          }}>
           {/* gold corner streaks */}
           <div
-            className="pointer-events-none absolute -right-14 -top-20 h-64 w-64 opacity-50"
+            className='pointer-events-none absolute -right-14 -top-20 h-64 w-64 opacity-50'
             style={{
               background:
                 "conic-gradient(from 18deg at 65% 35%, transparent 0deg 36deg, rgba(243,207,111,.55) 38deg 39.5deg, transparent 41deg 74deg, rgba(243,207,111,.35) 76deg 77deg, transparent 79deg)",
             }}
           />
           <div
-            className="pointer-events-none absolute -left-12 bottom-0 h-44 w-44 opacity-40"
+            className='pointer-events-none absolute -left-12 bottom-0 h-44 w-44 opacity-40'
             style={{
               background:
                 "conic-gradient(from 195deg at 30% 75%, transparent 0deg 26deg, rgba(243,207,111,.5) 28deg 29.5deg, transparent 31deg)",
@@ -291,64 +302,89 @@ export function BroadcastOverlay({
           />
 
           {/* masthead */}
-          <div className="relative flex items-center gap-4 border-b border-white/10 px-4 py-4 sm:px-6 sm:py-5">
+          <div className='relative flex items-center gap-4 border-b border-white/10 px-4 py-4 sm:px-6 sm:py-5'>
             <div
-              className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 sm:h-20 sm:w-20"
-              style={{ borderColor: "rgba(243,207,111,.55)", background: "rgba(0,0,0,.35)" }}
-            >
+              className='flex h-16 w-16 shrink-0 items-center justify-center rounded-full border-2 sm:h-20 sm:w-20'
+              style={{
+                borderColor: "rgba(243,207,111,.55)",
+                background: "rgba(0,0,0,.35)",
+              }}>
               <TeamLogo team={team} size={44} />
             </div>
-            <div className="min-w-0">
+            <div className='min-w-0'>
               <div
-                className="truncate text-3xl font-extrabold leading-none sm:text-5xl"
-                style={{ color: "#a9d2ff", textShadow: "0 2px 22px rgba(64,140,255,.65)", fontFamily: "var(--font-display)" }}
-              >
+                className='truncate text-3xl font-extrabold leading-none sm:text-5xl'
+                style={{
+                  color: "#a9d2ff",
+                  textShadow: "0 2px 22px rgba(64,140,255,.65)",
+                  fontFamily: "var(--font-display)",
+                }}>
                 {team.nameHi ?? team.name}
               </div>
               <div
-                className="mt-1.5 truncate text-[11px] font-semibold uppercase tracking-[0.3em] text-white/55 sm:text-xs"
-                style={{ fontFamily: "var(--font-cond)" }}
-              >
-                {team.name} · {xi.length === 11 ? "Official Playing XI" : `Playing XI — ${xi.length}/11 announced`}
+                className='mt-1.5 truncate text-[11px] font-semibold uppercase tracking-[0.3em] text-white/55 sm:text-xs'
+                style={{ fontFamily: "var(--font-cond)" }}>
+                {team.name} ·{" "}
+                {xi.length === 11
+                  ? "Official Playing XI"
+                  : `Playing XI — ${xi.length}/11 announced`}
               </div>
             </div>
-            <div className="ml-auto hidden flex-col items-end gap-1.5 sm:flex">
-              <span className="chip" style={{ background: "rgba(0,0,0,.4)", color: "#fff", borderColor: "transparent" }}>
+            <div className='ml-auto hidden flex-col items-end gap-1.5 sm:flex'>
+              <span
+                className='chip'
+                style={{
+                  background: "rgba(0,0,0,.4)",
+                  color: "#fff",
+                  borderColor: "transparent",
+                }}>
                 TATA IPL
               </span>
-              <span className="chip" style={{ background: "rgba(0,0,0,.4)", color: "#f3cf6f", borderColor: "transparent" }}>
+              <span
+                className='chip'
+                style={{
+                  background: "rgba(0,0,0,.4)",
+                  color: "#f3cf6f",
+                  borderColor: "transparent",
+                }}>
                 SEASON 2027
               </span>
             </div>
           </div>
 
           {/* body: featured captain · 10 numbered cards · substitutes rail */}
-          <div className="relative grid gap-2 p-3 sm:grid-cols-3 sm:gap-2.5 lg:h-[600px] lg:grid-cols-[200px_repeat(5,minmax(0,1fr))_238px] lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)] lg:p-4">
+          <div className='relative grid gap-2 p-3 sm:grid-cols-3 sm:gap-2.5 lg:h-[600px] lg:grid-cols-[200px_repeat(5,minmax(0,1fr))_238px] lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)] lg:p-4'>
             {/* featured captain */}
             {featured && (
               <div
-                className="anim-up relative col-span-2 flex h-80 flex-col overflow-hidden rounded-xl border-2 sm:col-span-3 lg:col-span-1 lg:row-span-2 lg:h-auto"
+                className='anim-up relative col-span-2 flex h-80 flex-col overflow-hidden rounded-xl border-2 sm:col-span-3 lg:col-span-1 lg:row-span-2 lg:h-auto'
                 style={{
                   ...burst(team.c2, team.c1),
                   borderColor: "rgba(243,207,111,.5)",
                   animationDelay: "0.08s",
-                }}
-              >
+                }}>
                 <AtBadge n={featured.slot} cap={!!capEntry} />
                 {featured.p.overseas && (
-                  <span className="absolute right-2 top-2 z-10 text-base text-sky-300 drop-shadow-[0_1px_4px_rgba(0,0,0,.6)]">✈</span>
+                  <span className='absolute right-2 top-2 z-10 text-base text-sky-300 drop-shadow-[0_1px_4px_rgba(0,0,0,.6)]'>
+                    ✈
+                  </span>
                 )}
                 <PhotoArea p={featured.p} team={team} />
-                <div className="px-2 pb-2 pt-1.5">
+                <div className='px-2 pb-2 pt-1.5'>
                   <div
-                    className="truncate rounded px-2 py-1.5 text-center text-base font-bold uppercase leading-tight tracking-wide"
-                    style={{ ...PLAQUE, fontFamily: "var(--font-cond)" }}
-                  >
+                    className='truncate rounded px-2 py-1.5 text-center text-base font-bold uppercase leading-tight tracking-wide'
+                    style={{ ...PLAQUE, fontFamily: "var(--font-cond)" }}>
                     {featured.p.name}
                   </div>
-                  <div className="flex items-center justify-center gap-2 py-1.5 text-white/90">
+                  <div className='flex items-center justify-center gap-2 py-1.5 text-white/90'>
                     <RoleGlyph role={featured.p.role} size={19} />
-                    {capEntry && <span className="text-sm font-bold" style={{ ...NUM_FONT, color: "#f3cf6f" }}>★ CAPTAIN</span>}
+                    {capEntry && (
+                      <span
+                        className='text-sm font-bold'
+                        style={{ ...NUM_FONT, color: "#f3cf6f" }}>
+                        ★ CAPTAIN
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -358,7 +394,13 @@ export function BroadcastOverlay({
             {restSlots.map((s, i) => {
               const e = ordered.find((x) => x.slot === s);
               return e ? (
-                <PlayerCard key={s} p={e.p} slot={s} delay={0.16 + i * 0.07} team={team} />
+                <PlayerCard
+                  key={s}
+                  p={e.p}
+                  slot={s}
+                  delay={0.16 + i * 0.07}
+                  team={team}
+                />
               ) : (
                 <EmptyCard key={s} slot={s} delay={0.16 + i * 0.07} />
               );
@@ -366,24 +408,21 @@ export function BroadcastOverlay({
 
             {/* substitutes rail */}
             <div
-              className="anim-r col-span-2 flex flex-col overflow-hidden rounded-xl border border-white/15 bg-[#04162f]/85 sm:col-span-3 lg:col-span-1 lg:row-span-2 lg:col-start-7 lg:row-start-1"
-              style={{ animationDelay: "0.55s" }}
-            >
+              className='anim-r col-span-2 flex flex-col overflow-hidden rounded-xl border border-white/15 bg-[#04162f]/85 sm:col-span-3 lg:col-span-1 lg:row-span-2 lg:col-start-7 lg:row-start-1'
+              style={{ animationDelay: "0.55s" }}>
               <div
-                className="px-3 py-2.5 text-center text-lg font-bold uppercase tracking-wider"
-                style={{ ...PLAQUE, fontFamily: "var(--font-cond)" }}
-              >
+                className='px-3 py-2.5 text-center text-lg font-bold uppercase tracking-wider'
+                style={{ ...PLAQUE, fontFamily: "var(--font-cond)" }}>
                 Substitutes
               </div>
               {impactPlayer && (
-                <div className="m-2 rounded-lg border border-amber-300/40 bg-amber-300/10 p-2">
+                <div className='m-2 rounded-lg border border-amber-300/40 bg-amber-300/10 p-2'>
                   <div
-                    className="text-center text-[10px] font-bold uppercase tracking-[0.25em] text-amber-200/80"
-                    style={{ fontFamily: "var(--font-cond)" }}
-                  >
+                    className='text-center text-[10px] font-bold uppercase tracking-[0.25em] text-amber-200/80'
+                    style={{ fontFamily: "var(--font-cond)" }}>
                     ⚡ Impact Player (12th)
                   </div>
-                  <div className="mt-1.5 flex items-center gap-2.5 px-1.5">
+                  <div className='mt-1.5 flex items-center gap-2.5 px-1.5'>
                     <PlayerPhoto
                       player={impactPlayer}
                       c1={team.c1}
@@ -392,20 +431,24 @@ export function BroadcastOverlay({
                       size={38}
                       ring={false}
                     />
-                    <div className="min-w-0">
-                      <div className="truncate text-sm font-bold uppercase leading-tight text-white/95" style={{ fontFamily: "var(--font-cond)" }}>
+                    <div className='min-w-0'>
+                      <div
+                        className='truncate text-sm font-bold uppercase leading-tight text-white/95'
+                        style={{ fontFamily: "var(--font-cond)" }}>
                         {impactPlayer.name}
                       </div>
-                      <div className="text-[10px] uppercase tracking-wider text-white/50">
-                        {ROLE_LABEL[impactPlayer.role]} · {fmtPrice(impactPlayer.price)}
+                      <div className='text-[10px] uppercase tracking-wider text-white/50'>
+                        {ROLE_LABEL[impactPlayer.role]}
                       </div>
                     </div>
                   </div>
                 </div>
               )}
-              <div className="flex-1 divide-y divide-white/10 overflow-y-auto">
+              <div className='flex-1 divide-y divide-white/10 overflow-y-auto'>
                 {subs.map((p) => (
-                  <div key={p.id} className="flex items-center gap-2.5 px-3.5 py-2.5">
+                  <div
+                    key={p.id}
+                    className='flex items-center gap-2.5 px-3.5 py-2.5'>
                     <PlayerPhoto
                       player={p}
                       c1={team.c1}
@@ -414,39 +457,68 @@ export function BroadcastOverlay({
                       size={38}
                       ring={false}
                     />
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-1.5">
-                        <span className="truncate text-sm font-semibold leading-tight text-white/95" style={{ fontFamily: "var(--font-cond)" }}>
+                    <div className='min-w-0 flex-1'>
+                      <div className='flex items-center gap-1.5'>
+                        <span
+                          className='truncate text-sm font-semibold leading-tight text-white/95'
+                          style={{ fontFamily: "var(--font-cond)" }}>
                           {p.name}
                         </span>
-                        {p.overseas && <span className="text-[10px] text-sky-300">✈</span>}
+                        {p.overseas && (
+                          <span className='text-[10px] text-sky-300'>✈</span>
+                        )}
                       </div>
-                      <div className="mt-0.5 flex items-center gap-1 text-[10px] uppercase tracking-wider text-white/50" style={{ fontFamily: "var(--font-cond)" }}>
+                      <div
+                        className='mt-0.5 flex items-center gap-1 text-[10px] uppercase tracking-wider text-white/50'
+                        style={{ fontFamily: "var(--font-cond)" }}>
                         <RoleGlyph role={p.role} size={12} />
-                        {ROLE_LABEL[p.role]} · <span className="text-amber-200/85">{fmtPrice(p.price)}</span>
+                        {ROLE_LABEL[p.role]}
                       </div>
                     </div>
                   </div>
                 ))}
-                {subs.length === 0 && <div className="px-3.5 py-4 text-sm text-white/40">Bench listed at the toss.</div>}
+                {subs.length === 0 && (
+                  <div className='px-3.5 py-4 text-sm text-white/40'>
+                    Bench listed at the toss.
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           {/* lower-third stat strip */}
-          <div className="relative flex flex-wrap items-center justify-between gap-x-5 gap-y-1 border-t border-white/10 px-4 py-2.5 sm:px-6">
+          <div className='relative flex flex-wrap items-center justify-between gap-x-5 gap-y-1 border-t border-white/10 px-4 py-2.5 sm:px-6'>
             {[
-              ["Captain", capEntry ? capEntry.p.name : team.captain ?? "—", team.c2],
+              [
+                "Captain",
+                capEntry ? capEntry.p.name : (team.captain ?? "—"),
+                team.c2,
+              ],
               ["Wicketkeeper", wk ? wk.name : "—", undefined],
-              ["Overseas", `${st.overseas}/4`, st.overseas <= 4 ? "#8fd694" : "#ff8a8a"],
+              [
+                "Overseas",
+                `${st.overseas}/4`,
+                st.overseas <= 4 ? "#8fd694" : "#ff8a8a",
+              ],
               ["Balance", `${st.score}/100`, team.c2],
-              ["XI Value", fmtPrice(xi.reduce((a, p) => a + p.price, 0)), undefined],
+              [
+                "XI Value",
+                fmtPrice(xi.reduce((a, p) => a + p.price, 0)),
+                undefined,
+              ],
             ].map(([label, value, color]) => (
               <div key={label as string}>
-                <div className="text-[9px] uppercase tracking-[0.25em] text-white/40" style={{ fontFamily: "var(--font-cond)" }}>
+                <div
+                  className='text-[9px] uppercase tracking-[0.25em] text-white/40'
+                  style={{ fontFamily: "var(--font-cond)" }}>
                   {label}
                 </div>
-                <div className="text-sm font-bold uppercase" style={{ fontFamily: "var(--font-cond)", color: (color as string) || "rgba(255,255,255,.9)" }}>
+                <div
+                  className='text-sm font-bold uppercase'
+                  style={{
+                    fontFamily: "var(--font-cond)",
+                    color: (color as string) || "rgba(255,255,255,.9)",
+                  }}>
                   {value}
                 </div>
               </div>
@@ -455,28 +527,42 @@ export function BroadcastOverlay({
         </div>
 
         {/* trade-desk ticker */}
-        <div className="anim-up mt-5 overflow-hidden rounded-full border border-white/10 bg-black/60" style={{ animationDelay: "1.4s" }}>
-          <div className="flex items-center">
+        <div
+          className='anim-up mt-5 overflow-hidden rounded-full border border-white/10 bg-black/60'
+          style={{ animationDelay: "1.4s" }}>
+          <div className='flex items-center'>
             <span
-              className="z-10 shrink-0 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest"
-              style={{ background: "#7b2ff7", color: "#fff", fontFamily: "var(--font-cond)" }}
-            >
+              className='z-10 shrink-0 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-widest'
+              style={{
+                background: "#7b2ff7",
+                color: "#fff",
+                fontFamily: "var(--font-cond)",
+              }}>
               TRADE DESK
             </span>
-            <div className="relative flex-1 overflow-hidden py-1.5">
+            <div className='relative flex-1 overflow-hidden py-1.5'>
               <div
-                className="ticker-track flex w-max gap-10 whitespace-nowrap text-xs uppercase tracking-wider text-white/70"
-                style={{ fontFamily: "var(--font-cond)" }}
-              >
+                className='ticker-track flex w-max gap-10 whitespace-nowrap text-xs uppercase tracking-wider text-white/70'
+                style={{ fontFamily: "var(--font-cond)" }}>
                 {[0, 1].map((k) => (
-                  <span key={k} className="flex gap-10">
-                    <span>Shami &amp; Siddharth → RR · Sam Curran → LSG (Nov 17)</span>
+                  <span key={k} className='flex gap-10'>
+                    <span>
+                      Shami &amp; Siddharth → RR · Sam Curran → LSG (Nov 17)
+                    </span>
                     <span>Harshal Patel → GT (Nov 17)</span>
-                    <span>Hardik Pandya → PBKS · Arshdeep Singh → MI (Nov 11)</span>
-                    <span>Livingstone &amp; Edwards → CSK · Khaleel &amp; Ellis → SRH (Nov 5)</span>
+                    <span>
+                      Hardik Pandya → PBKS · Arshdeep Singh → MI (Nov 11)
+                    </span>
+                    <span>
+                      Livingstone &amp; Edwards → CSK · Khaleel &amp; Ellis →
+                      SRH (Nov 5)
+                    </span>
                     <span>Natarajan → SRH · Zeeshan Ansari → DC (Oct 14)</span>
                     <span>Pant → DC · Kuldeep Yadav → LSG (Jun 23)</span>
-                    <span>Retentions locked 17 Nov 2026 · 184 retained, 89 released · Mini auction: 16 Dec 2026, Goa</span>
+                    <span>
+                      Retentions locked 17 Nov 2026 · 184 retained, 89 released
+                      · Mini auction: 16 Dec 2026, Goa
+                    </span>
                   </span>
                 ))}
               </div>

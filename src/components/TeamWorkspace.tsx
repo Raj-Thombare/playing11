@@ -1,8 +1,10 @@
 "use client";
 
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Player, Team, Trade } from "@/data/teams";
 import { OVERSEAS_CAP, PURSE } from "@/data/teams";
+import { PLAYERS } from "@/data/players";
+import { auctionPlayer, readAuction } from "@/lib/auction";
 import { PlayerPhoto, getPhotoMode, setPhotoMode, PREF_EVENT, type PhotoMode } from "./PlayerPhoto";
 import { OverseasChip, RoleBadge, StatusBadge } from "./Badges";
 import { TeamLogo } from "./TeamLogo";
@@ -522,14 +524,31 @@ export function TeamWorkspace({
   squad: Player[]; // full roster incl. retired records
   trades: Trade[];
 }) {
-  const byId = useMemo(() => new Map(squad.map((p) => [p.id, p])), [squad]);
+  /* released players "bought" at the local auction join this franchise's
+     pool — they are real Player records with status "auction" */
+  const [auctionPicks, setAuctionPicks] = useState<Player[]>([]);
+  useEffect(() => {
+    const picks = readAuction();
+    setAuctionPicks(
+      Object.entries(picks)
+        .filter(([, pick]) => pick?.team === team.id)
+        .map(([id, pick]) => {
+          const p = PLAYERS.find((x) => x.id === id);
+          return p ? auctionPlayer(p, pick) : null;
+        })
+        .filter((p): p is Player => !!p)
+    );
+  }, [team.id]);
+
+  const allSquad = useMemo(() => [...squad, ...auctionPicks], [squad, auctionPicks]);
+  const byId = useMemo(() => new Map(allSquad.map((p) => [p.id, p])), [allSquad]);
 
   /* roster splits — all data-derived */
-  const contracted = useMemo(() => squad.filter((p) => !p.retired && p.status !== "released"), [squad]);
+  const contracted = useMemo(() => allSquad.filter((p) => !p.retired && p.status !== "released"), [allSquad]);
   const fit = useMemo(() => contracted.filter((p) => p.status !== "injured"), [contracted]);
   const injuredList = useMemo(() => contracted.filter((p) => p.status === "injured"), [contracted]);
-  const releasedList = useMemo(() => squad.filter((p) => p.status === "released"), [squad]);
-  const retiredList = useMemo(() => squad.filter((p) => p.retired), [squad]);
+  const releasedList = useMemo(() => allSquad.filter((p) => p.status === "released"), [allSquad]);
+  const retiredList = useMemo(() => allSquad.filter((p) => p.retired), [allSquad]);
   const ovContracted = useMemo(() => contracted.filter((p) => p.overseas).length, [contracted]);
   const ovFit = useMemo(() => fit.filter((p) => p.overseas).length, [fit]);
 
@@ -547,6 +566,7 @@ export function TeamWorkspace({
   const [fromLink, setFromLink] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
   const [linkCopied, setLinkCopied] = useState(false);
+  const loadedTeamRef = useRef<string | null>(null);
 
   /** copy a link that opens this XI straight in the on-air reveal */
   const copyRevealLink = useCallback(() => {
@@ -561,6 +581,10 @@ export function TeamWorkspace({
      the page opens straight into the broadcast overlay — the friend sees
      only the on-air reveal until they close it. */
   useEffect(() => {
+    /* auction picks may arrive after mount and change `byId` — never reload
+       the XI (or a shared link) a second time for the same team */
+    if (loadedTeamRef.current === team.id) return;
+    loadedTeamRef.current = team.id;
     try {
       const params = new URLSearchParams(window.location.search);
       const xiParam = params.get("xi");
@@ -673,7 +697,7 @@ export function TeamWorkspace({
   const picked = xi.length;
   const st = validateXI(xi);
   const captain = captainId ? byId.get(captainId)?.name : team.captain;
-  const watched = useMemo(() => squad.filter((p) => p.releaseWatch && p.status !== "released"), [squad]);
+  const watched = useMemo(() => allSquad.filter((p) => p.releaseWatch && p.status !== "released"), [allSquad]);
   const freedTotal = watched.filter((p) => freed[p.id]).reduce((a, p) => a + p.price, 0);
 
   const onDragStart = useCallback((payload: DragPayload) => setDragId(payload.id), []);
