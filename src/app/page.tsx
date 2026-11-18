@@ -327,8 +327,49 @@ export default function Home() {
           </div>
         </div>
 
-        <footer className='mt-14 text-center text-xs text-white/35'>
-          Raj Thombare
+        <footer className='sheen mt-14 overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#131a2b] via-[#0b0e16] to-[#131a2b] px-6 py-10 text-center'>
+          <p className='text-[10px] font-bold uppercase tracking-[0.4em] text-white/35' style={{ fontFamily: "var(--font-cond)" }}>
+            Built &amp; maintained by
+          </p>
+          <h2
+            className='mt-3 text-5xl font-extrabold uppercase leading-none tracking-wide sm:text-7xl'
+            style={{
+              fontFamily: "var(--font-display)",
+              backgroundImage:
+                "linear-gradient(100deg, #f6cc1b 5%, #ff9d3f 30%, #ff4fa3 55%, #b02ff7 78%, #4f8dff 100%)",
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "#f6cc1b",
+              filter: "drop-shadow(0 10px 34px rgba(176,47,247,.35))",
+            }}
+          >
+            Raj Thombare
+          </h2>
+          <div className='mt-6 flex items-center justify-center gap-3 text-xs'>
+            <a
+              href='https://www.instagram.com/RajTh0mbare'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1 text-white/50 transition-colors hover:border-white/30 hover:text-white/85'
+            >
+              <svg aria-hidden='true' width='13' height='13' viewBox='0 0 24 24' fill='currentColor'>
+                <path d='M12 2.2c3.2 0 3.6 0 4.9.1 1.2.1 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1 .4 2.2.1 1.3.1 1.7.1 4.9s0 3.6-.1 4.9c-.1 1.2-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1 .4-2.2.4-1.3.1-1.7.1-4.9.1s-3.6 0-4.9-.1c-1.2-.1-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1-.4-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.1-4.9c.1-1.2.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1-.4 2.2-.4C8.4 2.2 8.8 2.2 12 2.2zm0 2a5.8 5.8 0 1 0 0 11.6 5.8 5.8 0 0 0 0-11.6zm0 2a3.8 3.8 0 1 1 0 7.6 3.8 3.8 0 0 1 0-7.6zm6.1-2.4a1.4 1.4 0 1 0 0 2.8 1.4 1.4 0 0 0 0-2.8z' />
+              </svg>
+              Instagram
+            </a>
+            <a
+              href='https://x.com/RajTh0mbare'
+              target='_blank'
+              rel='noopener noreferrer'
+              className='inline-flex items-center gap-1.5 rounded-full border border-white/10 px-3 py-1 text-white/50 transition-colors hover:border-white/30 hover:text-white/85'
+            >
+              <svg aria-hidden='true' width='12' height='12' viewBox='0 0 24 24' fill='currentColor'>
+                <path d='M18.9 2H22l-6.8 7.8L23.3 22h-7.3l-5-6.6L5.3 22H2.2l7.4-8.5L1.2 2h7.5l4.6 6.1L18.9 2zm-1.3 18h1.7L7 3.9H5.1L17.6 20z' />
+              </svg>
+              Twitter / X
+            </a>
+          </div>
         </footer>
       </div>
     </main>

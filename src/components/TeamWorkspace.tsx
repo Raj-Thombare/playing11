@@ -645,49 +645,66 @@ export function TeamWorkspace({
   return (
     <div>
       {/* team header */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/10">
-        <div className="absolute inset-0 beams" />
+      <div className='relative overflow-hidden rounded-2xl border border-white/10'>
+        <div className='absolute inset-0 beams' />
         <div
-          className="absolute inset-0"
-          style={{ background: `linear-gradient(120deg, ${team.c1}e6 0%, ${team.c1}99 45%, transparent 100%)` }}
+          className='absolute inset-0'
+          style={{
+            background: `linear-gradient(120deg, ${team.c1}e6 0%, ${team.c1}99 45%, transparent 100%)`,
+          }}
         />
-        <div className="absolute inset-0 vignette" />
-        <div className="relative flex flex-wrap items-center gap-4 p-5 sm:p-7">
+        <div className='absolute inset-0 vignette' />
+        <div className='relative flex flex-wrap items-center gap-4 p-5 sm:p-7'>
           <TeamLogo team={team} size={64} />
-          <div className="min-w-0">
+          <div className='min-w-0'>
             <h1
-              className="text-3xl font-bold uppercase leading-none tracking-wide sm:text-4xl"
-              style={{ fontFamily: "var(--font-display)", color: "#fff" }}
-            >
+              className='text-3xl font-bold uppercase leading-none tracking-wide sm:text-4xl'
+              style={{ fontFamily: "var(--font-display)", color: "#fff" }}>
               {team.name}
             </h1>
-            <div className="mt-1 text-sm font-semibold uppercase tracking-[0.25em]" style={{ fontFamily: "var(--font-cond)", color: team.ink }}>
+            <div
+              className='mt-1 text-sm font-semibold uppercase tracking-[0.25em]'
+              style={{ fontFamily: "var(--font-cond)", color: team.ink }}>
               {team.city} · {team.venue}
             </div>
           </div>
-          <div className="ml-auto grid grid-cols-2 gap-2 text-center sm:grid-cols-4">
+          <div className='ml-auto grid grid-cols-2 gap-2 text-center sm:grid-cols-4'>
             {[
-              ["Titles", team.titles ? `${team.titles} (${team.titleYears.join(", ")})` : "0"],
+              [
+                "Titles",
+                team.titles
+                  ? `${team.titles} (${team.titleYears.join(", ")})`
+                  : "0",
+              ],
               ["Captain", team.captain ?? "TBA"],
               ["Contracts", `${contracted.length}/25`],
               ["Overseas", `${ovContracted}/8`],
             ].map(([k, v]) => (
-              <div key={k} className="rounded-lg bg-black/30 px-3 py-2 backdrop-blur">
-                <div className="text-[10px] uppercase tracking-widest text-white/60">{k}</div>
-                <div className="text-sm font-bold" style={{ fontFamily: "var(--font-cond)", color: team.ink }}>
+              <div
+                key={k}
+                className='rounded-lg bg-black/30 px-3 py-2 backdrop-blur'>
+                <div className='text-[10px] uppercase tracking-widest text-white/60'>
+                  {k}
+                </div>
+                <div
+                  className='text-sm font-bold'
+                  style={{ fontFamily: "var(--font-cond)", color: team.ink }}>
                   {v}
                 </div>
               </div>
             ))}
           </div>
-          <p className="w-full text-sm text-white/85">{team.statusLine}</p>
+          <p className='w-full text-sm text-white/85'>{team.statusLine}</p>
           {injuredList.length > 0 && (
-            <div className="w-full">
+            <div className='w-full'>
               <span
-                className="chip"
-                style={{ color: "#ffb84d", borderColor: "rgba(255,184,77,.35)", background: "rgba(255,184,77,.08)" }}
-                title={injuredList.map((p) => p.name).join(", ")}
-              >
+                className='chip'
+                style={{
+                  color: "#ffb84d",
+                  borderColor: "rgba(255,184,77,.35)",
+                  background: "rgba(255,184,77,.08)",
+                }}
+                title={injuredList.map((p) => p.name).join(", ")}>
                 🩹 {injuredList.length} injured — contracts held, not released
               </span>
             </div>
@@ -696,7 +713,7 @@ export function TeamWorkspace({
       </div>
 
       {/* tabs */}
-      <div className="mt-4 flex flex-wrap gap-1.5">
+      <div className='mt-4 flex flex-wrap gap-1.5'>
         {(
           [
             ["builder", "XI Builder"],
@@ -707,71 +724,85 @@ export function TeamWorkspace({
           <button
             key={id}
             onClick={() => setTab(id)}
-            className="rounded-full px-4 py-2 text-sm font-bold uppercase tracking-widest transition-colors"
+            className='rounded-full px-4 py-2 text-sm font-bold uppercase tracking-widest transition-colors'
             style={{
               fontFamily: "var(--font-cond)",
-              background: tab === id ? `linear-gradient(100deg, ${team.c1}, ${team.c2})` : "rgba(255,255,255,.05)",
+              background:
+                tab === id
+                  ? `linear-gradient(100deg, ${team.c1}, ${team.c2})`
+                  : "rgba(255,255,255,.05)",
               color: tab === id ? "#fff" : "rgba(255,255,255,.65)",
               border: "1px solid rgba(255,255,255,.1)",
-            }}
-          >
+            }}>
             {label}
           </button>
         ))}
-        <span className="ml-auto self-center text-xs text-white/40">
-          {saved ? "XI saved ✓" : fromLink ? "🔗 Shared XI loaded — read-only; your own saved XI is untouched" : "XI auto-saves to this browser"}
+        <span className='ml-auto self-center text-xs text-white/40'>
+          {saved
+            ? "XI saved ✓"
+            : fromLink
+              ? "🔗 Shared XI loaded — read-only; your own saved XI is untouched"
+              : "XI auto-saves to this browser"}
         </span>
       </div>
 
       {/* ================= BUILDER ================= */}
       {tab === "builder" && (
-        <div className="mt-4 grid gap-4 lg:grid-cols-5">
+        <div className='mt-4 grid gap-4 lg:grid-cols-5'>
           {/* pool */}
-          <div className="lg:col-span-3">
-            <div className="plate p-3">
-              <div className="flex flex-wrap items-center gap-2">
+          <div className='lg:col-span-3'>
+            <div className='plate p-3'>
+              <div className='flex flex-wrap items-center gap-2'>
                 <input
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
-                  placeholder="Search squad…"
-                  className="min-w-0 flex-1 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none placeholder:text-white/30 focus:border-white/30"
+                  placeholder='Search squad…'
+                  className='min-w-0 flex-1 rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm outline-none placeholder:text-white/30 focus:border-white/30'
                 />
                 {(["all", "IN", "OV"] as const).map((f) => (
                   <button
                     key={f}
                     onClick={() => setOvFilter(f)}
-                    className="rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-widest"
+                    className='rounded-lg px-3 py-2 text-xs font-bold uppercase tracking-widest'
                     style={{
                       fontFamily: "var(--font-cond)",
-                      background: ovFilter === f ? `${team.c1}` : "rgba(255,255,255,.05)",
+                      background:
+                        ovFilter === f ? `${team.c1}` : "rgba(255,255,255,.05)",
                       color: ovFilter === f ? "#fff" : "rgba(255,255,255,.6)",
-                    }}
-                  >
+                    }}>
                     {f === "all" ? "All" : f === "IN" ? "Indian" : "Overseas"}
                   </button>
                 ))}
                 <PhotoModeToggle />
                 {injuredList.length > 0 && (
-                  <span className="chip" style={{ color: "#ffb84d", borderColor: "rgba(255,184,77,.3)" }} title="Injured players hold contracts but can't be picked in the XI">
+                  <span
+                    className='chip'
+                    style={{
+                      color: "#ffb84d",
+                      borderColor: "rgba(255,184,77,.3)",
+                    }}
+                    title="Injured players hold contracts but can't be picked in the XI">
                     🩹 injured locked
                   </span>
                 )}
               </div>
-              <p className="mt-2 text-[11px] uppercase tracking-widest text-white/35" style={{ fontFamily: "var(--font-cond)" }}>
-                Drag any player into any slot 1–11 — or drop him back here to remove
+              <p
+                className='mt-2 text-[11px] uppercase tracking-widest text-white/35'
+                style={{ fontFamily: "var(--font-cond)" }}>
+                Drag any player into any slot 1–11 — or drop him back here to
+                remove
               </p>
-              <div className="mt-3 max-h-[70vh] space-y-4 overflow-y-auto pr-1">
+              <div className='mt-3 max-h-[70vh] space-y-4 overflow-y-auto pr-1'>
                 {grouped.map((g) => (
                   <div key={g.role}>
                     <div
-                      className="mb-1.5 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-white/50"
-                      style={{ fontFamily: "var(--font-cond)" }}
-                    >
+                      className='mb-1.5 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-white/50'
+                      style={{ fontFamily: "var(--font-cond)" }}>
                       {ROLE_LABEL[g.role]}s
-                      <span className="h-px flex-1 bg-white/10" />
+                      <span className='h-px flex-1 bg-white/10' />
                       <span>{g.list.length}</span>
                     </div>
-                    <div className="grid gap-1.5 sm:grid-cols-2">
+                    <div className='grid gap-1.5 sm:grid-cols-2'>
                       {g.list.map((p) => (
                         <PlayerRow
                           key={p.id}
@@ -781,7 +812,9 @@ export function TeamWorkspace({
                           slotNo={slots.indexOf(p.id) + 1}
                           blocked={picked >= 11}
                           ovFull={st.overseas >= OVERSEAS_CAP}
-                          locked={p.status === "injured" || p.status === "released"}
+                          locked={
+                            p.status === "injured" || p.status === "released"
+                          }
                           dragActive={dragId}
                           onToggle={placeFirstEmpty}
                           onRemove={removeFromXI}
@@ -792,29 +825,47 @@ export function TeamWorkspace({
                     </div>
                   </div>
                 ))}
-                {pool.length === 0 && <div className="py-10 text-center text-white/40">No players match the filters.</div>}
+                {pool.length === 0 && (
+                  <div className='py-10 text-center text-white/40'>
+                    No players match the filters.
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
           {/* XI board */}
-          <div className="lg:col-span-2">
-            <div className="plate sticky top-4 p-3" style={{ boxShadow: `0 30px 80px -40px ${team.c1}` }}>
+          <div className='lg:col-span-2'>
+            <div
+              className='plate sticky top-4 p-3'
+              style={{ boxShadow: `0 30px 80px -40px ${team.c1}` }}>
               <div
-                className="sheen flex items-center justify-between rounded-lg px-3 py-2"
-                style={{ background: `linear-gradient(100deg, ${team.c1}, ${team.c2})` }}
-              >
-                <span className="text-lg font-bold uppercase tracking-widest text-white" style={{ fontFamily: "var(--font-display)" }}>
+                className='sheen flex items-center justify-between rounded-lg px-3 py-2'
+                style={{
+                  background: `linear-gradient(100deg, ${team.c1}, ${team.c2})`,
+                }}>
+                <span
+                  className='text-lg font-bold uppercase tracking-widest text-white'
+                  style={{ fontFamily: "var(--font-display)" }}>
                   Playing XI
                 </span>
-                <span className="chip" style={{ background: "rgba(0,0,0,.3)", color: team.ink, borderColor: "transparent" }}>
+                <span
+                  className='chip'
+                  style={{
+                    background: "rgba(0,0,0,.3)",
+                    color: team.ink,
+                    borderColor: "transparent",
+                  }}>
                   {picked}/11
                 </span>
               </div>
-              <p className="mt-2 px-1 text-[11px] uppercase tracking-widest text-white/35" style={{ fontFamily: "var(--font-cond)" }}>
-                Drag between slots to reorder · drop a player on a filled slot to swap
+              <p
+                className='mt-2 px-1 text-[11px] uppercase tracking-widest text-white/35'
+                style={{ fontFamily: "var(--font-cond)" }}>
+                Drag between slots to reorder · drop a player on a filled slot
+                to swap
               </p>
-              <div className="mt-2 space-y-1.5">
+              <div className='mt-2 space-y-1.5'>
                 {Array.from({ length: 11 }, (_, i) => (
                   <Slot
                     key={i}
@@ -832,69 +883,87 @@ export function TeamWorkspace({
                   />
                 ))}
               </div>
-              <div className="mt-3">
+              <div className='mt-3'>
                 <ValidationStrip checks={st.count} />
               </div>
-              <div className="mt-3">
+              <div className='mt-3'>
                 <BalanceMeter score={st.score} c1={team.c1} c2={team.c2} />
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-2">
+              <div className='mt-3 grid grid-cols-2 gap-2'>
                 <button
                   onClick={runAI}
-                  className="rounded-lg px-3 py-2.5 text-sm font-bold uppercase tracking-widest text-white transition-transform hover:scale-[1.02]"
+                  className='rounded-lg px-3 py-2.5 text-sm font-bold uppercase tracking-widest text-white transition-transform hover:scale-[1.02]'
                   style={{
                     fontFamily: "var(--font-cond)",
                     background: "linear-gradient(100deg, #7b2ff7, #b02ff7)",
                     boxShadow: "0 10px 30px -12px #7b2ff7",
-                  }}
-                >
+                  }}>
                   ⚡ Auto-Pick XI (AI)
                 </button>
                 <button
                   onClick={() => st.valid && setOnAir(true)}
                   disabled={!st.valid}
-                  className="rounded-lg px-3 py-2.5 text-sm font-bold uppercase tracking-widest transition-transform enabled:hover:scale-[1.02] disabled:opacity-40"
-                  style={{ fontFamily: "var(--font-cond)", background: `linear-gradient(100deg, ${team.c1}, ${team.c2})`, color: team.ink }}
-                  title={st.valid ? "Show the broadcast playing-XI graphic" : "Complete a valid XI first"}
-                >
-                  📺 Reveal on Air
+                  className='rounded-lg px-3 py-2.5 text-sm font-bold uppercase tracking-widest transition-transform enabled:hover:scale-[1.02] disabled:opacity-40'
+                  style={{
+                    fontFamily: "var(--font-cond)",
+                    background: `linear-gradient(100deg, ${team.c1}, ${team.c2})`,
+                    color: team.ink,
+                  }}
+                  title={
+                    st.valid
+                      ? "Show the broadcast playing-XI graphic"
+                      : "Complete a valid XI first"
+                  }>
+                  📺 View Playing XI
                 </button>
                 <button
                   onClick={reset}
-                  className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold uppercase tracking-widest text-white/60 hover:bg-white/5"
-                  style={{ fontFamily: "var(--font-cond)" }}
-                >
+                  className='rounded-lg border border-white/15 px-3 py-2 text-xs font-bold uppercase tracking-widest text-white/60 hover:bg-white/5'
+                  style={{ fontFamily: "var(--font-cond)" }}>
                   Reset
                 </button>
                 <button
                   onClick={() => setSaved(true)}
-                  className="rounded-lg border border-white/15 px-3 py-2 text-xs font-bold uppercase tracking-widest text-white/60 hover:bg-white/5"
-                  style={{ fontFamily: "var(--font-cond)" }}
-                >
+                  className='rounded-lg border border-white/15 px-3 py-2 text-xs font-bold uppercase tracking-widest text-white/60 hover:bg-white/5'
+                  style={{ fontFamily: "var(--font-cond)" }}>
                   Mark as Final
                 </button>
                 <button
                   onClick={copyRevealLink}
                   disabled={!xi.length}
-                  className="col-span-2 rounded-lg border border-white/15 px-3 py-2 text-xs font-bold uppercase tracking-widest transition-transform enabled:hover:scale-[1.01] enabled:hover:bg-white/5 disabled:opacity-40"
-                  style={{ fontFamily: "var(--font-cond)", color: linkCopied ? "#8fd694" : undefined }}
-                  title="Copy a link — whoever opens it sees this XI as the full-screen on-air reveal"
-                >
-                  {linkCopied ? "🔗 Reveal link copied ✓" : "🔗 Copy Reveal Link"}
+                  className='col-span-2 rounded-lg border border-white/15 px-3 py-2 text-xs font-bold uppercase tracking-widest transition-transform enabled:hover:scale-[1.01] enabled:hover:bg-white/5 disabled:opacity-40'
+                  style={{
+                    fontFamily: "var(--font-cond)",
+                    color: linkCopied ? "#8fd694" : undefined,
+                  }}
+                  title='Copy a link — whoever opens it sees this XI as the full-screen on-air reveal'>
+                  {linkCopied
+                    ? "🔗 Playing XI link copied ✓"
+                    : "🔗 Copy Playing XI Link"}
                 </button>
               </div>
               {ai && (
-                <div className="mt-3 rounded-lg border border-purple-400/20 bg-purple-500/5 p-3">
-                  <div className="text-xs font-bold uppercase tracking-[0.2em] text-purple-300" style={{ fontFamily: "var(--font-cond)" }}>
+                <div className='mt-3 rounded-lg border border-purple-400/20 bg-purple-500/5 p-3'>
+                  <div
+                    className='text-xs font-bold uppercase tracking-[0.2em] text-purple-300'
+                    style={{ fontFamily: "var(--font-cond)" }}>
                     AI Selection Engine — why this XI
                   </div>
-                  <div className="mt-1 text-[11px] text-white/55">{ai.notes.join(" · ")}</div>
-                  <div className="mt-2 max-h-56 space-y-1.5 overflow-y-auto pr-1">
+                  <div className='mt-1 text-[11px] text-white/55'>
+                    {ai.notes.join(" · ")}
+                  </div>
+                  <div className='mt-2 max-h-56 space-y-1.5 overflow-y-auto pr-1'>
                     {ai.reasons.map((r) => (
-                      <div key={r.player.id} className="rounded bg-black/30 px-2.5 py-1.5 text-xs">
-                        <span className="font-bold text-white">{r.player.name}</span>
-                        <span className="ml-2 rounded bg-purple-500/20 px-1.5 py-0.5 text-[10px] text-purple-200">{r.score.toFixed(1)}</span>
-                        <div className="mt-0.5 text-white/50">{r.line}</div>
+                      <div
+                        key={r.player.id}
+                        className='rounded bg-black/30 px-2.5 py-1.5 text-xs'>
+                        <span className='font-bold text-white'>
+                          {r.player.name}
+                        </span>
+                        <span className='ml-2 rounded bg-purple-500/20 px-1.5 py-0.5 text-[10px] text-purple-200'>
+                          {r.score.toFixed(1)}
+                        </span>
+                        <div className='mt-0.5 text-white/50'>{r.line}</div>
                       </div>
                     ))}
                   </div>
@@ -907,54 +976,91 @@ export function TeamWorkspace({
 
       {/* ================= SQUAD & RETENTION ================= */}
       {tab === "squad" && (
-        <div className="mt-4 space-y-4">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className='mt-4 space-y-4'>
+          <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
             {[
-              ["Contracts", `${contracted.length}/25 cap`, contracted.length > 25 ? "over limit — cuts due" : "all contracts counted"],
+              [
+                "Contracts",
+                `${contracted.length}/25 cap`,
+                contracted.length > 25
+                  ? "over limit — cuts due"
+                  : "all contracts counted",
+              ],
               ["Fit now", `${fit.length}`, "available for the 2027 XI"],
               ["Overseas", `${ovContracted}/8 cap`, `fit: ${ovFit}`],
               ["Payroll", fmtPrice(team.payroll), "known contracts"],
-              ["Purse left", fmtPrice(Math.max(0, PURSE - team.payroll)), "of ₹130 Cr (est.)"],
+              [
+                "Purse left",
+                fmtPrice(Math.max(0, PURSE - team.payroll)),
+                "of ₹130 Cr (est.)",
+              ],
               ["Deadline", "17 Nov 2026", "retentions & cuts due"],
             ].map(([k, v, sub], i) => (
-              <div key={i} className="plate p-3">
-                <div className="text-[10px] uppercase tracking-widest text-white/45">{k}</div>
-                <div className="mt-0.5 text-xl font-bold" style={{ fontFamily: "var(--font-display)", color: team.c2 }}>
+              <div key={i} className='plate p-3'>
+                <div className='text-[10px] uppercase tracking-widest text-white/45'>
+                  {k}
+                </div>
+                <div
+                  className='mt-0.5 text-xl font-bold'
+                  style={{ fontFamily: "var(--font-display)", color: team.c2 }}>
                   {v}
                 </div>
-                <div className="text-[11px] text-white/40">{sub}</div>
+                <div className='text-[11px] text-white/40'>{sub}</div>
               </div>
             ))}
           </div>
 
-          <div className="plate p-4">
-            <div className="plate-head text-sm text-white/80">Mini-auction retention rules</div>
-            <p className="mt-1 text-sm text-white/60">
-              Unlimited retentions inside the ₹130 Cr purse — exact contract fees (or trade fees) are deducted, no ₹18/14/11 Cr
-              slabs and no RTM cards. Squad cap 25, overseas cap 8. Released contracts return 100% of fee to the purse for the
-              16 Dec 2026 Goa mini auction. Retention &amp; release lists due <b className="text-white/80">17 Nov 2026</b>; registration
-              closes 23 Nov; pruned list 3 Dec.
+          <div className='plate p-4'>
+            <div className='plate-head text-sm text-white/80'>
+              Mini-auction retention rules
+            </div>
+            <p className='mt-1 text-sm text-white/60'>
+              Unlimited retentions inside the ₹130 Cr purse — exact contract
+              fees (or trade fees) are deducted, no ₹18/14/11 Cr slabs and no
+              RTM cards. Squad cap 25, overseas cap 8. Released contracts return
+              100% of fee to the purse for the 16 Dec 2026 Goa mini auction.
+              Retention &amp; release lists due{" "}
+              <b className='text-white/80'>17 Nov 2026</b>; registration closes
+              23 Nov; pruned list 3 Dec.
             </p>
           </div>
 
           {injuredList.length > 0 && (
-            <div className="plate p-4">
-              <div className="plate-head text-sm text-white/80">🩹 Injured — contracts held (not released)</div>
-              <p className="mt-1 text-xs text-white/45">
-                Ruled out during IPL 2026 but kept on the roster — they count toward contracts, not the fit XI. Franchises are not
-                required to release them; only a voluntary cut frees purse, which would move them to the released pool below.
+            <div className='plate p-4'>
+              <div className='plate-head text-sm text-white/80'>
+                🩹 Injured — contracts held (not released)
+              </div>
+              <p className='mt-1 text-xs text-white/45'>
+                Ruled out during IPL 2026 but kept on the roster — they count
+                toward contracts, not the fit XI. Franchises are not required to
+                release them; only a voluntary cut frees purse, which would move
+                them to the released pool below.
               </p>
-              <div className="mt-3 grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className='mt-3 grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3'>
                 {injuredList.map((p) => (
-                  <div key={p.id} className="flex items-center gap-2 rounded-lg bg-white/[0.03] px-3 py-2">
-                    <PlayerPhoto player={p} c1={team.c1} c2={team.c2} ink={team.ink} size={30} />
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-semibold" style={{ fontFamily: "var(--font-cond)" }}>
+                  <div
+                    key={p.id}
+                    className='flex items-center gap-2 rounded-lg bg-white/[0.03] px-3 py-2'>
+                    <PlayerPhoto
+                      player={p}
+                      c1={team.c1}
+                      c2={team.c2}
+                      ink={team.ink}
+                      size={30}
+                    />
+                    <div className='min-w-0 flex-1'>
+                      <div
+                        className='truncate text-sm font-semibold'
+                        style={{ fontFamily: "var(--font-cond)" }}>
                         {p.name}
                       </div>
-                      <div className="truncate text-[11px] text-white/40">{p.note}</div>
+                      <div className='truncate text-[11px] text-white/40'>
+                        {p.note}
+                      </div>
                     </div>
-                    <span className="text-xs text-white/50">{fmtPrice(p.price)}</span>
+                    <span className='text-xs text-white/50'>
+                      {fmtPrice(p.price)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -962,20 +1068,41 @@ export function TeamWorkspace({
           )}
 
           {releasedList.length > 0 && (
-            <div className="plate p-4">
-              <div className="plate-head text-sm text-white/80">Released — free agents in the Goa pool (16 Dec 2026)</div>
-              <p className="mt-1 text-xs text-white/45">100% of each released fee returns to the ₹130 Cr purse.</p>
-              <div className="mt-3 grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className='plate p-4'>
+              <div className='plate-head text-sm text-white/80'>
+                Released — free agents in the Goa pool (16 Dec 2026)
+              </div>
+              <p className='mt-1 text-xs text-white/45'>
+                100% of each released fee returns to the ₹130 Cr purse.
+              </p>
+              <div className='mt-3 grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3'>
                 {releasedList.map((p) => (
-                  <div key={p.id} className="flex items-center gap-2 rounded-lg bg-red-500/[0.05] px-3 py-2">
-                    <PlayerPhoto player={p} c1={team.c1} c2={team.c2} ink={team.ink} size={30} />
-                    <div className="min-w-0 flex-1">
-                      <div className="truncate text-sm font-semibold" style={{ fontFamily: "var(--font-cond)" }}>
+                  <div
+                    key={p.id}
+                    className='flex items-center gap-2 rounded-lg bg-red-500/[0.05] px-3 py-2'>
+                    <PlayerPhoto
+                      player={p}
+                      c1={team.c1}
+                      c2={team.c2}
+                      ink={team.ink}
+                      size={30}
+                    />
+                    <div className='min-w-0 flex-1'>
+                      <div
+                        className='truncate text-sm font-semibold'
+                        style={{ fontFamily: "var(--font-cond)" }}>
                         {p.name}
                       </div>
-                      <div className="truncate text-[11px] text-white/40">{p.note ?? "Released before the 17 Nov 2026 deadline"}</div>
+                      <div className='truncate text-[11px] text-white/40'>
+                        {p.note ?? "Released before the 17 Nov 2026 deadline"}
+                      </div>
                     </div>
-                    <span className="chip" style={{ color: "#ff7a7a", borderColor: "rgba(255,122,122,.3)" }}>
+                    <span
+                      className='chip'
+                      style={{
+                        color: "#ff7a7a",
+                        borderColor: "rgba(255,122,122,.3)",
+                      }}>
                       {fmtPrice(p.price)} freed
                     </span>
                   </div>
@@ -984,61 +1111,114 @@ export function TeamWorkspace({
             </div>
           )}
 
-          <div className="plate overflow-hidden">
-            <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-              <span className="plate-head text-sm text-white/80">Full squad ({contracted.length})</span>
-              <span className="text-xs text-white/40">sorted by contract</span>
+          <div className='plate overflow-hidden'>
+            <div className='flex items-center justify-between border-b border-white/10 px-4 py-3'>
+              <span className='plate-head text-sm text-white/80'>
+                Full squad ({contracted.length})
+              </span>
+              <span className='text-xs text-white/40'>sorted by contract</span>
             </div>
-            <div className="max-h-[60vh] overflow-y-auto">
-              <table className="w-full text-left text-sm">
-                <thead className="sticky top-0 bg-[#0b0e16] text-[10px] uppercase tracking-widest text-white/40">
+            <div className='max-h-[60vh] overflow-y-auto'>
+              <table className='w-full text-left text-sm'>
+                <thead className='sticky top-0 bg-[#0b0e16] text-[10px] uppercase tracking-widest text-white/40'>
                   <tr>
-                    <th className="px-4 py-2">Player</th>
-                    <th className="px-3 py-2">Role</th>
-                    <th className="px-3 py-2">Country</th>
-                    <th className="px-3 py-2">Fee</th>
-                    <th className="px-3 py-2">Status</th>
+                    <th className='px-4 py-2'>Player</th>
+                    <th className='px-3 py-2'>Role</th>
+                    <th className='px-3 py-2'>Country</th>
+                    <th className='px-3 py-2'>Fee</th>
+                    <th className='px-3 py-2'>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {[...contracted].sort((a, b) => b.price - a.price).map((p) => (
-                    <tr key={p.id} className="border-t border-white/5 hover:bg-white/[0.03]">
-                      <td className="px-4 py-2">
-                        <div className="flex items-center gap-2.5">
-                          <PlayerPhoto player={p} c1={team.c1} c2={team.c2} ink={team.ink} size={30} />
-                          <div className="min-w-0">
-                            <div className="truncate font-semibold" style={{ fontFamily: "var(--font-cond)" }}>{p.name}</div>
-                            {p.note && <div className="truncate text-[11px] text-white/40">{p.note}</div>}
+                  {[...contracted]
+                    .sort((a, b) => b.price - a.price)
+                    .map((p) => (
+                      <tr
+                        key={p.id}
+                        className='border-t border-white/5 hover:bg-white/[0.03]'>
+                        <td className='px-4 py-2'>
+                          <div className='flex items-center gap-2.5'>
+                            <PlayerPhoto
+                              player={p}
+                              c1={team.c1}
+                              c2={team.c2}
+                              ink={team.ink}
+                              size={30}
+                            />
+                            <div className='min-w-0'>
+                              <div
+                                className='truncate font-semibold'
+                                style={{ fontFamily: "var(--font-cond)" }}>
+                                {p.name}
+                              </div>
+                              {p.note && (
+                                <div className='truncate text-[11px] text-white/40'>
+                                  {p.note}
+                                </div>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-3 py-2"><RoleBadge role={p.role} /></td>
-                      <td className="px-3 py-2"><div className="flex items-center gap-2">{p.country}<OverseasChip overseas={p.overseas} /></div></td>
-                      <td className="px-3 py-2 font-semibold" style={{ fontFamily: "var(--font-display)" }}>{fmtPrice(p.price)}</td>
-                      <td className="px-3 py-2">
-                        <div className="flex flex-wrap gap-1">
-                          <StatusBadge status={p.status} note={p.note} />
-                          {p.releaseWatch && (
-                            <span className="chip" style={{ color: "#ffbf6b", borderColor: "rgba(255,191,107,.3)" }} title={`Release watch: ${p.releaseWatch}`}>
-                              ⚠ Watch
-                            </span>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td className='px-3 py-2'>
+                          <RoleBadge role={p.role} />
+                        </td>
+                        <td className='px-3 py-2'>
+                          <div className='flex items-center gap-2'>
+                            {p.country}
+                            <OverseasChip overseas={p.overseas} />
+                          </div>
+                        </td>
+                        <td
+                          className='px-3 py-2 font-semibold'
+                          style={{ fontFamily: "var(--font-display)" }}>
+                          {fmtPrice(p.price)}
+                        </td>
+                        <td className='px-3 py-2'>
+                          <div className='flex flex-wrap gap-1'>
+                            <StatusBadge status={p.status} note={p.note} />
+                            {p.releaseWatch && (
+                              <span
+                                className='chip'
+                                style={{
+                                  color: "#ffbf6b",
+                                  borderColor: "rgba(255,191,107,.3)",
+                                }}
+                                title={`Release watch: ${p.releaseWatch}`}>
+                                ⚠ Watch
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
                   {retiredList.map((p) => (
-                    <tr key={p.id} className="border-t border-white/5 opacity-60">
-                      <td className="px-4 py-2">
-                        <div className="flex items-center gap-2.5">
-                          <PlayerPhoto player={p} c1={team.c1} c2={team.c2} ink={team.ink} size={30} />
-                          <span className="font-semibold" style={{ fontFamily: "var(--font-cond)" }}>{p.name}</span>
+                    <tr
+                      key={p.id}
+                      className='border-t border-white/5 opacity-60'>
+                      <td className='px-4 py-2'>
+                        <div className='flex items-center gap-2.5'>
+                          <PlayerPhoto
+                            player={p}
+                            c1={team.c1}
+                            c2={team.c2}
+                            ink={team.ink}
+                            size={30}
+                          />
+                          <span
+                            className='font-semibold'
+                            style={{ fontFamily: "var(--font-cond)" }}>
+                            {p.name}
+                          </span>
                         </div>
                       </td>
-                      <td className="px-3 py-2"><RoleBadge role={p.role} /></td>
-                      <td className="px-3 py-2">{p.country}</td>
-                      <td className="px-3 py-2">{fmtPrice(p.price)}</td>
-                      <td className="px-3 py-2"><StatusBadge status="retired" note={p.note} /></td>
+                      <td className='px-3 py-2'>
+                        <RoleBadge role={p.role} />
+                      </td>
+                      <td className='px-3 py-2'>{p.country}</td>
+                      <td className='px-3 py-2'>{fmtPrice(p.price)}</td>
+                      <td className='px-3 py-2'>
+                        <StatusBadge status='retired' note={p.note} />
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -1046,27 +1226,54 @@ export function TeamWorkspace({
             </div>
           </div>
 
-          <div className="plate p-4">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="plate-head text-sm text-white/80">Release watch — purse freed simulator</div>
-              <div className="chip" style={{ color: "#8fd694", borderColor: "rgba(143,214,148,.4)" }}>
+          <div className='plate p-4'>
+            <div className='flex flex-wrap items-center justify-between gap-2'>
+              <div className='plate-head text-sm text-white/80'>
+                Release watch — purse freed simulator
+              </div>
+              <div
+                className='chip'
+                style={{
+                  color: "#8fd694",
+                  borderColor: "rgba(143,214,148,.4)",
+                }}>
                 Freed: {fmtPrice(freedTotal)} → Goa purse
               </div>
             </div>
-            <p className="mt-1 text-xs text-white/45">Tick contracts the franchise may cut by the 17 Nov deadline — 100% of each fee returns to the ₹130 Cr purse.</p>
-            <div className="mt-3 grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+            <p className='mt-1 text-xs text-white/45'>
+              Tick contracts the franchise may cut by the 17 Nov deadline — 100%
+              of each fee returns to the ₹130 Cr purse.
+            </p>
+            <div className='mt-3 grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3'>
               {watched.map((p) => (
-                <label key={p.id} className="flex cursor-pointer items-center gap-2 rounded-lg bg-white/[0.03] px-3 py-2 text-sm hover:bg-white/[0.06]">
+                <label
+                  key={p.id}
+                  className='flex cursor-pointer items-center gap-2 rounded-lg bg-white/[0.03] px-3 py-2 text-sm hover:bg-white/[0.06]'>
                   <input
-                    type="checkbox"
+                    type='checkbox'
                     checked={!!freed[p.id]}
-                    onChange={(e) => setFreed((f) => ({ ...f, [p.id]: e.target.checked }))}
-                    className="h-4 w-4"
+                    onChange={(e) =>
+                      setFreed((f) => ({ ...f, [p.id]: e.target.checked }))
+                    }
+                    className='h-4 w-4'
                     style={{ accentColor: team.c2 }}
                   />
-                  <span className="min-w-0 flex-1 truncate" style={{ fontFamily: "var(--font-cond)" }}>{p.name}</span>
-                  <span className="text-xs text-white/50">{fmtPrice(p.price)}</span>
-                  <span className="chip hidden lg:inline-flex" style={{ color: "#ffbf6b", borderColor: "rgba(255,191,107,.25)" }}>{p.releaseWatch}</span>
+                  <span
+                    className='min-w-0 flex-1 truncate'
+                    style={{ fontFamily: "var(--font-cond)" }}>
+                    {p.name}
+                  </span>
+                  <span className='text-xs text-white/50'>
+                    {fmtPrice(p.price)}
+                  </span>
+                  <span
+                    className='chip hidden lg:inline-flex'
+                    style={{
+                      color: "#ffbf6b",
+                      borderColor: "rgba(255,191,107,.25)",
+                    }}>
+                    {p.releaseWatch}
+                  </span>
                 </label>
               ))}
             </div>
@@ -1076,79 +1283,119 @@ export function TeamWorkspace({
 
       {/* ================= TRADES & CAPTAINS ================= */}
       {tab === "trades" && (
-        <div className="mt-4 space-y-4">
-          <div className="grid gap-3 md:grid-cols-2">
-            <div className="plate p-4">
-              <div className="plate-head text-sm text-white/80">Captaincy</div>
-              <div className="mt-2 text-2xl font-bold uppercase" style={{ fontFamily: "var(--font-display)", color: team.c2 }}>
+        <div className='mt-4 space-y-4'>
+          <div className='grid gap-3 md:grid-cols-2'>
+            <div className='plate p-4'>
+              <div className='plate-head text-sm text-white/80'>Captaincy</div>
+              <div
+                className='mt-2 text-2xl font-bold uppercase'
+                style={{ fontFamily: "var(--font-display)", color: team.c2 }}>
                 {team.captain ?? "To Be Announced"}
               </div>
-              {team.captainSince && <div className="text-xs uppercase tracking-widest text-white/45">Captain since {team.captainSince}</div>}
-              <p className="mt-2 text-sm text-white/60">{team.captainNote}</p>
-              <div className="mt-3 text-xs uppercase tracking-widest text-white/40">
-                Head coach: <span className="text-white/70">{team.coach}</span>
+              {team.captainSince && (
+                <div className='text-xs uppercase tracking-widest text-white/45'>
+                  Captain since {team.captainSince}
+                </div>
+              )}
+              <p className='mt-2 text-sm text-white/60'>{team.captainNote}</p>
+              <div className='mt-3 text-xs uppercase tracking-widest text-white/40'>
+                Head coach: <span className='text-white/70'>{team.coach}</span>
               </div>
             </div>
-            <div className="plate p-4">
-              <div className="plate-head text-sm text-white/80">Season status</div>
-              <p className="mt-2 text-sm text-white/60">{team.statusLine}</p>
-              <div className="mt-3 flex flex-wrap gap-1.5">
-                <span className="chip" style={{ color: "#ffc75a" }}>Trades closed for retentions: 17 Nov</span>
-                <span className="chip" style={{ color: "#9cc3ff" }}>Mini auction: 16 Dec 2026 · Goa</span>
+            <div className='plate p-4'>
+              <div className='plate-head text-sm text-white/80'>
+                Season status
+              </div>
+              <p className='mt-2 text-sm text-white/60'>{team.statusLine}</p>
+              <div className='mt-3 flex flex-wrap gap-1.5'>
+                <span className='chip' style={{ color: "#ffc75a" }}>
+                  Trades closed for retentions: 17 Nov
+                </span>
+                <span className='chip' style={{ color: "#9cc3ff" }}>
+                  Mini auction: 16 Dec 2026 · Goa
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="plate p-4">
-            <div className="plate-head text-sm text-white/80">This franchise in the 2027 trade window</div>
+          <div className='plate p-4'>
+            <div className='plate-head text-sm text-white/80'>
+              This franchise in the 2027 trade window
+            </div>
             {teamTrades.length === 0 ? (
-              <p className="mt-2 text-sm text-white/50">No completed trades — GT, KKR, RR and RCB stayed out of the window.</p>
+              <p className='mt-2 text-sm text-white/50'>
+                No completed trades — GT, KKR, RR and RCB stayed out of the
+                window.
+              </p>
             ) : (
-              <div className="mt-2 space-y-3">
+              <div className='mt-2 space-y-3'>
                 {teamTrades.map((t) => (
-                  <div key={t.date + t.title} className="rounded-lg bg-white/[0.03] p-3">
-                    <div className="text-xs uppercase tracking-widest text-white/40">
-                      {new Date(t.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })} · {t.title}
+                  <div
+                    key={t.date + t.title}
+                    className='rounded-lg bg-white/[0.03] p-3'>
+                    <div className='text-xs uppercase tracking-widest text-white/40'>
+                      {new Date(t.date).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}{" "}
+                      · {t.title}
                     </div>
-                    <div className="mt-1.5 flex flex-wrap gap-2">
+                    <div className='mt-1.5 flex flex-wrap gap-2'>
                       {t.moves.map((m) => (
                         <span
                           key={m.name}
-                          className="chip"
+                          className='chip'
                           style={{
                             color: m.to === team.id ? "#8fd694" : "#ff9b8a",
-                            borderColor: m.to === team.id ? "rgba(143,214,148,.35)" : "rgba(255,155,138,.35)",
-                          }}
-                        >
-                          {m.name} {m.from === team.id ? "→ out" : "→ in"} · {fmtPrice(m.fee)}
+                            borderColor:
+                              m.to === team.id
+                                ? "rgba(143,214,148,.35)"
+                                : "rgba(255,155,138,.35)",
+                          }}>
+                          {m.name} {m.from === team.id ? "→ out" : "→ in"} ·{" "}
+                          {fmtPrice(m.fee)}
                         </span>
                       ))}
                     </div>
-                    <p className="mt-1.5 text-sm text-white/55">{t.summary}</p>
+                    <p className='mt-1.5 text-sm text-white/55'>{t.summary}</p>
                   </div>
                 ))}
               </div>
             )}
           </div>
 
-          <div className="plate p-4">
-            <div className="plate-head text-sm text-white/80">League trade timeline</div>
-            <div className="mt-3 space-y-3">
+          <div className='plate p-4'>
+            <div className='plate-head text-sm text-white/80'>
+              League trade timeline
+            </div>
+            <div className='mt-3 space-y-3'>
               {trades.map((t) => (
-                <div key={t.date + t.title} className="flex gap-3">
-                  <div className="w-20 shrink-0 pt-1 text-xs font-bold uppercase text-white/40" style={{ fontFamily: "var(--font-cond)" }}>
-                    {new Date(t.date).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                <div key={t.date + t.title} className='flex gap-3'>
+                  <div
+                    className='w-20 shrink-0 pt-1 text-xs font-bold uppercase text-white/40'
+                    style={{ fontFamily: "var(--font-cond)" }}>
+                    {new Date(t.date).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                    })}
                   </div>
-                  <div className="min-w-0 flex-1 border-l-2 pl-3" style={{ borderColor: `${team.c2}55` }}>
-                    <div className="text-sm font-bold uppercase tracking-wide" style={{ fontFamily: "var(--font-cond)" }}>{t.title}</div>
-                    <div className="mt-1 flex flex-wrap gap-1.5">
+                  <div
+                    className='min-w-0 flex-1 border-l-2 pl-3'
+                    style={{ borderColor: `${team.c2}55` }}>
+                    <div
+                      className='text-sm font-bold uppercase tracking-wide'
+                      style={{ fontFamily: "var(--font-cond)" }}>
+                      {t.title}
+                    </div>
+                    <div className='mt-1 flex flex-wrap gap-1.5'>
                       {t.moves.map((m) => (
-                        <span key={m.name} className="chip">
+                        <span key={m.name} className='chip'>
                           {m.name}: {m.from} → {m.to} ({fmtPrice(m.fee)})
                         </span>
                       ))}
                     </div>
-                    <p className="mt-1 text-xs text-white/50">{t.summary}</p>
+                    <p className='mt-1 text-xs text-white/50'>{t.summary}</p>
                   </div>
                 </div>
               ))}
