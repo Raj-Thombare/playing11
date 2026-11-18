@@ -9,7 +9,7 @@ import { TeamLogo } from "./TeamLogo";
 import { BroadcastOverlay } from "./BroadcastOverlay";
 import { ROLE_LABEL, ROLE_ORDER, fmtPrice, validateXI, type Check } from "@/lib/xi";
 import { autoPickXI, type AutoPickResult } from "@/lib/autoPick";
-import { decodeSlots } from "@/lib/share";
+import { copyToClipboard, decodeSlots, revealUrl } from "@/lib/share";
 
 type Tab = "builder" | "squad" | "trades";
 
@@ -456,10 +456,20 @@ export function TeamWorkspace({
   const [ready, setReady] = useState(false);
   const [fromLink, setFromLink] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  /** copy a link that opens this XI straight in the on-air reveal */
+  const copyRevealLink = useCallback(() => {
+    copyToClipboard(revealUrl(team.id, slots, captainId));
+    setLinkCopied(true);
+    window.setTimeout(() => setLinkCopied(false), 2200);
+  }, [team.id, slots, captainId]);
 
   /* ---- persistence (loads once, then only saves after hydration) ----
      A shared link (?xi=…&cap=…) wins over this browser's saved XI, so the
-     recipient sees the shared XI exactly as it was built. */
+     recipient sees the shared XI exactly as it was built. With view=reveal
+     the page opens straight into the broadcast overlay — the friend sees
+     only the on-air reveal until they close it. */
   useEffect(() => {
     try {
       const params = new URLSearchParams(window.location.search);
@@ -475,6 +485,7 @@ export function TeamWorkspace({
         setFromLink(true);
         const cap = params.get("cap");
         if (cap && byId.has(cap)) setCaptainId(cap);
+        if (params.get("view") === "reveal") setOnAir(true);
         setReady(true);
         return;
       }
@@ -497,19 +508,21 @@ export function TeamWorkspace({
     setReady(true);
   }, [team.id, byId]);
 
+  /* a shared XI is read-only in the recipient's browser — never overwrite
+     their own locally-saved XI with someone else's picks */
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || fromLink) return;
     try {
       localStorage.setItem(`iplxi:sel:${team.id}`, JSON.stringify(slots));
     } catch {}
-  }, [slots, ready, team.id]);
+  }, [slots, ready, fromLink, team.id]);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || fromLink) return;
     try {
       if (captainId) localStorage.setItem(`iplxi:cap:${team.id}`, captainId);
     } catch {}
-  }, [captainId, ready, team.id]);
+  }, [captainId, ready, fromLink, team.id]);
 
   /* ---- derived ---- */
   const xi = useMemo(
@@ -540,6 +553,8 @@ export function TeamWorkspace({
         .slice(0, 5),
     [fit, slots]
   );
+  /** reveal link — opens this XI straight in the on-air overlay */
+  const revealHref = useMemo(() => revealUrl(team.id, slots, captainId), [team.id, slots, captainId]);
   const picked = xi.length;
   const st = validateXI(xi);
   const captain = captainId ? byId.get(captainId)?.name : team.captain;
@@ -704,7 +719,7 @@ export function TeamWorkspace({
           </button>
         ))}
         <span className="ml-auto self-center text-xs text-white/40">
-          {saved ? "XI saved ✓" : fromLink ? "🔗 Shared XI loaded — edits save to this browser" : "XI auto-saves to this browser"}
+          {saved ? "XI saved ✓" : fromLink ? "🔗 Shared XI loaded — read-only; your own saved XI is untouched" : "XI auto-saves to this browser"}
         </span>
       </div>
 
@@ -857,6 +872,15 @@ export function TeamWorkspace({
                   style={{ fontFamily: "var(--font-cond)" }}
                 >
                   Mark as Final
+                </button>
+                <button
+                  onClick={copyRevealLink}
+                  disabled={!xi.length}
+                  className="col-span-2 rounded-lg border border-white/15 px-3 py-2 text-xs font-bold uppercase tracking-widest transition-transform enabled:hover:scale-[1.01] enabled:hover:bg-white/5 disabled:opacity-40"
+                  style={{ fontFamily: "var(--font-cond)", color: linkCopied ? "#8fd694" : undefined }}
+                  title="Copy a link — whoever opens it sees this XI as the full-screen on-air reveal"
+                >
+                  {linkCopied ? "🔗 Reveal link copied ✓" : "🔗 Copy Reveal Link"}
                 </button>
               </div>
               {ai && (
@@ -1134,7 +1158,14 @@ export function TeamWorkspace({
       )}
 
       {onAir && (
-        <BroadcastOverlay team={team} ordered={ordered} captainId={captainId} subs={subs} onClose={() => setOnAir(false)} />
+        <BroadcastOverlay
+          team={team}
+          ordered={ordered}
+          captainId={captainId}
+          subs={subs}
+          shareHref={revealHref}
+          onClose={() => setOnAir(false)}
+        />
       )}
     </div>
   );

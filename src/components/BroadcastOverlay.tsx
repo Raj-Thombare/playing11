@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { Player, Role, Team } from "@/data/teams";
 import { PlayerPhoto } from "./PlayerPhoto";
 import { TeamLogo } from "./TeamLogo";
 import { fmtPrice, validateXI } from "@/lib/xi";
+import { copyToClipboard } from "@/lib/share";
 
 const NUM_FONT: React.CSSProperties = {
   fontFamily: "var(--font-display)",
@@ -154,6 +155,7 @@ export function BroadcastOverlay({
   ordered,
   captainId,
   subs,
+  shareHref,
   onClose,
 }: {
   team: Team;
@@ -162,8 +164,11 @@ export function BroadcastOverlay({
   captainId?: string | null;
   /** bench options: highest-contract players not in the XI */
   subs: Player[];
+  /** reveal link (opens this overlay for whoever clicks it) */
+  shareHref?: string;
   onClose: () => void;
 }) {
+  const [copied, setCopied] = useState(false);
   useEffect(() => {
     const h = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", h);
@@ -187,6 +192,26 @@ export function BroadcastOverlay({
       <div className="absolute inset-0 beams opacity-40" />
       <div className="absolute inset-0 grain" />
       <div className="fixed right-4 top-4 z-20 flex flex-col items-end gap-2">
+        {shareHref && (
+          <button
+            onClick={() => {
+              copyToClipboard(shareHref);
+              setCopied(true);
+              window.setTimeout(() => setCopied(false), 2200);
+            }}
+            aria-label="Copy reveal link"
+            className="rounded-full border px-4 py-2 text-sm font-semibold uppercase tracking-widest hover:brightness-110"
+            style={{
+              fontFamily: "var(--font-cond)",
+              borderColor: copied ? "rgba(143,214,148,.6)" : "rgba(243,207,111,.55)",
+              background: copied ? "rgba(143,214,148,.15)" : "rgba(243,207,111,.12)",
+              color: copied ? "#8fd694" : "#f3cf6f",
+            }}
+            title="Copy a link — whoever opens it sees this reveal full-screen"
+          >
+            {copied ? "🔗 Link copied ✓" : "🔗 Share"}
+          </button>
+        )}
         <button
           onClick={onClose}
           aria-label="Close broadcast view"

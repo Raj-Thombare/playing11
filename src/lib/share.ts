@@ -8,6 +8,7 @@ import type { Player, Team } from "@/data/teams";
  *   - slots are comma-joined in slot order (1–11); an empty slot is "~"
  *   - trailing empty slots are trimmed
  *   - `cap` carries the captain's player id (optional)
+ *   - `view=reveal` makes the link open straight into the broadcast overlay
  */
 
 export interface ShareEntry {
@@ -50,6 +51,31 @@ export function shareUrl(teamId: string, slots: (string | null)[], captainId?: s
     return new URL(path, window.location.origin).toString();
   } catch {
     return path;
+  }
+}
+
+/** absolute link that opens straight into the broadcast "Reveal on Air" overlay.
+ *  The recipient sees only the on-air graphic until they close it, then lands
+ *  in the builder with the shared XI loaded (read-only — their own saved XI is
+ *  untouched). */
+export function revealUrl(teamId: string, slots: (string | null)[], captainId?: string | null): string {
+  const url = shareUrl(teamId, slots, captainId);
+  return url.includes("?") ? `${url}&view=reveal` : `${url}?view=reveal`;
+}
+
+/** copy text to the clipboard, with an execCommand fallback for older browsers */
+export function copyToClipboard(text: string): void {
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).catch(() => {});
+  } else {
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand("copy");
+    } catch {}
+    document.body.removeChild(ta);
   }
 }
 
