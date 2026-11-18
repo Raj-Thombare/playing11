@@ -224,6 +224,7 @@ const Slot = memo(function Slot({
   if (!player)
     return (
       <div
+        data-drop-slot={i}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
@@ -242,6 +243,10 @@ const Slot = memo(function Slot({
   return (
     <div
       draggable
+      data-drag-id={player.id}
+      data-drag-from="slot"
+      data-drag-idx={i}
+      data-drop-slot={i}
       onDragStart={(e) => {
         startDrag(e, { id: player.id, from: "slot", idx: i });
         onDragStart({ id: player.id, from: "slot", idx: i });
@@ -304,6 +309,7 @@ const XIChip = memo(function XIChip({
   team,
   impact,
   onSet,
+  dropSlot,
 }: {
   n?: number;
   player?: Player;
@@ -311,6 +317,7 @@ const XIChip = memo(function XIChip({
   team: Team;
   impact?: boolean;
   onSet?: (id: string | null) => void;
+  dropSlot?: number;
 }) {
   const handleClick = () => {
     if (impact && onSet && player) onSet(null);
@@ -319,6 +326,7 @@ const XIChip = memo(function XIChip({
   if (!player && !impact) {
     return (
       <div
+        data-drop-slot={dropSlot}
         className='shrink-0 w-12 h-12 rounded-full border border-dashed border-white/15 flex items-center justify-center text-[10px] font-bold text-white/30'
         style={{ fontFamily: "var(--font-display)" }}
       >
@@ -334,11 +342,16 @@ const XIChip = memo(function XIChip({
   return (
     <div
       onClick={handleClick}
-      className='shrink-0 w-12 h-12 rounded-full border flex items-center justify-center relative overflow-hidden cursor-pointer'
+      data-drop-slot={dropSlot}
+      data-drop-impact={isImpact ? "" : undefined}
+      data-drag-id={player?.id}
+      data-drag-from={player ? "slot" : undefined}
       style={{
+        touchAction: "none",
         borderColor: isImpact ? '#ffc75a' : team.c2,
         background: 'rgba(255,255,255,.04)',
       }}
+      className='shrink-0 w-12 h-12 rounded-full border flex items-center justify-center relative overflow-hidden cursor-pointer'
     >
       {player ? (
         <>
@@ -397,6 +410,7 @@ const ImpactSlot = memo(function ImpactSlot({
 
   return (
     <div
+      data-drop-impact=""
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -418,6 +432,8 @@ const ImpactSlot = memo(function ImpactSlot({
           <>
             <span
               draggable
+              data-drag-id={player.id}
+              data-drag-from="slot"
               onDragStart={(e) => {
                 startDrag(e, { id: player.id, from: "slot" });
                 onDragStart({ id: player.id, from: "slot" });
@@ -484,7 +500,8 @@ const PlayerRow = memo(function PlayerRow({
   onDragEnd: () => void;
 }) {
   const [over, setOver] = useState(false);
-  const disabled = !inXI && (blocked || locked || (ovFull && p.overseas));
+  // XI full (blocked) → still tappable so the player can be set as the 12th impact
+  const disabled = !inXI && (locked || (!blocked && ovFull && p.overseas));
   const title = inXI
     ? "Remove from XI (slot " + slotNo + ") — or drag into any free slot"
     : locked
@@ -492,7 +509,7 @@ const PlayerRow = memo(function PlayerRow({
         ? "Injured — contract held, unavailable for the XI"
         : "Released — no longer on the roster"
       : blocked
-        ? "XI is full (11)"
+        ? "XI is full — tap to set as Impact Player (12th)"
         : ovFull && p.overseas
           ? "Overseas cap (4) reached in XI"
           : "Add to XI";
@@ -534,12 +551,19 @@ const PlayerRow = memo(function PlayerRow({
           : inXI
             ? `inset 0 0 0 1px ${team.c2}66`
             : undefined,
-        opacity: locked ? 0.55 : blocked && !inXI ? 0.45 : 1,
+        opacity: locked ? 0.55 : blocked && !inXI && !p.retired ? 0.75 : 1,
         cursor: locked || p.retired ? "not-allowed" : "grab",
       }}
       title={locked || p.retired ? undefined : "Drag into any slot 1–11"}
     >
-      <PlayerPhoto player={p} c1={team.c1} c2={team.c2} ink={team.ink} size={36} />
+      <span
+        data-drag-id={locked || p.retired ? undefined : p.id}
+        data-drag-from="pool"
+        style={{ touchAction: "none" }}
+        className="shrink-0"
+      >
+        <PlayerPhoto player={p} c1={team.c1} c2={team.c2} ink={team.ink} size={36} />
+      </span>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="truncate text-sm font-semibold" style={{ fontFamily: "var(--font-cond)" }}>
@@ -636,6 +660,7 @@ export function TeamWorkspace({
   const [ready, setReady] = useState(false);
   const [fromLink, setFromLink] = useState(false);
   const [dragId, setDragId] = useState<string | null>(null);
+  const touchPayloadRef = useRef<DragPayload | null>(null);
   const [linkCopied, setLinkCopied] = useState(false);
   const loadedTeamRef = useRef<string | null>(null);
 
@@ -791,23 +816,37 @@ export function TeamWorkspace({
     [byId, impactId]
   );
 
-  /** "＋" on a pool row → first empty slot (any order the user wants, arrows/DnD refine it) */
+  /** "＋" on a pool row → first empty slot; when the XI is full, sets the 12th impact player */
   const placeFirstEmpty = useCallback(
     (id: string) => {
       setSaved(false);
+      const p = byId.get(id);
+      if (!p || p.retired || p.status === "injured" || p.status === "released") return;
+      // acts as "−" for XI players
+      if (slots.includes(id)) {
+        setSlots((cur) => cur.filter((x) => x !== id));
+        return;
+      }
+      // already the impact player → clear impact
+      if (id === impactId) {
+        setImpactId(null);
+        return;
+      }
+      const emptyIdx = slots.indexOf(null);
+      if (emptyIdx === -1) {
+        // XI full → set as the 12th impact player
+        setImpactId(id);
+        return;
+      }
       setSlots((cur) => {
-        const p = byId.get(id);
-        if (!p || p.retired || p.status === "injured" || p.status === "released") return cur;
-        if (cur.includes(id)) return cur.filter((x) => x !== id); // acts as "−" for XI players
-        if (id === impactId) setImpactId(null); // promoted from impact → XI
-        const emptyIdx = cur.indexOf(null);
-        if (emptyIdx === -1) return cur;
+        const idx = cur.indexOf(null);
+        if (idx === -1) return cur;
         const next = [...cur];
-        next[emptyIdx] = id;
+        next[idx] = id;
         return legalXI(next, byId) ? next : cur;
       });
     },
-    [byId, impactId]
+    [byId, slots, impactId]
   );
 
   /** ✕ on a slot, or dropping a player back onto the squad */
@@ -834,6 +873,58 @@ export function TeamWorkspace({
     setAi(null);
     setSaved(false);
   };
+
+  /* ---- touch drag & drop (mobile) — HTML5 DnD is mouse-only ---- */
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const target = (e.target as HTMLElement).closest("[data-drag-id]") as HTMLElement | null;
+    if (!target) return;
+    const id = target.dataset.dragId;
+    if (!id) return;
+    touchPayloadRef.current = {
+      id,
+      from: (target.dataset.dragFrom as "slot" | "pool") || "pool",
+      idx: target.dataset.dragIdx ? parseInt(target.dataset.dragIdx) : undefined,
+    };
+    setDragId(id);
+  }, []);
+
+  const handleTouchMove = useCallback((e: React.TouchEvent) => {
+    if (!touchPayloadRef.current) return;
+    e.preventDefault(); // stop page scroll while dragging
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (e: React.TouchEvent) => {
+      const payload = touchPayloadRef.current;
+      if (!payload) return;
+      touchPayloadRef.current = null;
+      setDragId(null);
+
+      const touch = e.changedTouches[0];
+      const el = document.elementFromPoint(touch.clientX, touch.clientY) as HTMLElement | null;
+      if (!el) return;
+
+      // drop on a slot
+      const slot = el.closest("[data-drop-slot]") as HTMLElement | null;
+      if (slot) {
+        const idx = parseInt(slot.dataset.dropSlot || "-1");
+        if (idx >= 0) dropPlace(idx, payload.id);
+        return;
+      }
+      // drop back on the pool → remove from XI
+      const pool = el.closest("[data-drop-pool]") as HTMLElement | null;
+      if (pool && payload.from === "slot") {
+        removeFromXI(payload.id);
+        return;
+      }
+      // drop on the impact card
+      const impact = el.closest("[data-drop-impact]") as HTMLElement | null;
+      if (impact) {
+        setImpact(payload.id);
+      }
+    },
+    [dropPlace, removeFromXI, setImpact]
+  );
 
   const runAI = () => {
     // AI never picks injured or released players
@@ -864,7 +955,11 @@ export function TeamWorkspace({
   /* ============ render ============ */
 
   return (
-    <div>
+    <div
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
+    >
       {/* team header */}
       <div className='relative overflow-hidden rounded-2xl border border-white/10'>
         <div className='absolute inset-0 beams' />
@@ -1013,7 +1108,7 @@ export function TeamWorkspace({
                 Drag any player into slots 1–11 or the ⚡ Impact card — or drop
                 him back here to remove
               </p>
-              <div className='mt-3 space-y-4 pr-1'>
+              <div data-drop-pool className='mt-3 space-y-4 pr-1'>
                 {grouped.map((g) => (
                   <div key={g.role}>
                     <div
@@ -1687,6 +1782,7 @@ export function TeamWorkspace({
                 <XIChip
                   key={i}
                   n={i + 1}
+                  dropSlot={i}
                   player={slots[i] ? byId.get(slots[i] as string) : undefined}
                   isCap={!!slots[i] && slots[i] === captainId}
                   team={team}
@@ -1698,6 +1794,7 @@ export function TeamWorkspace({
                 <XIChip
                   key={i}
                   n={i + 7}
+                  dropSlot={i + 6}
                   player={slots[i + 6] ? byId.get(slots[i + 6] as string) : undefined}
                   isCap={!!slots[i + 6] && slots[i + 6] === captainId}
                   team={team}
