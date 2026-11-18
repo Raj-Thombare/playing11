@@ -167,9 +167,13 @@ function extractSelf(html: string): RosterEntry | null {
 /* name matching                                                       */
 /* ------------------------------------------------------------------ */
 
+/** strip diacritics so "Lhuan-dré" matches "Lhuan-dre" */
+function deaccent(s: string): string {
+  return s.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+}
+
 function tokens(name: string): string[] {
-  return name
-    .toLowerCase()
+  return deaccent(name.toLowerCase())
     .replace(/[^a-z0-9 ]/g, " ")
     .split(/\s+/)
     .filter(Boolean);
@@ -188,6 +192,78 @@ function isSubsequence(a: string[], b: string[]): boolean {
 
 function normKey(name: string): string {
   return tokens(name).join(" ");
+}
+
+/** levenshtein distance ≤ 1 (one substitution, insert or delete) */
+function editDist1(a: string, b: string): boolean {
+  if (a === b) return true;
+  if (Math.abs(a.length - b.length) > 1) return false;
+  if (a.length === b.length) {
+    let diff = 0;
+    for (let i = 0; i < a.length; i++) if (a[i] !== b[i] && ++diff > 1) return false;
+    return diff === 1;
+  }
+  const [s, l] = a.length < b.length ? [a, b] : [b, a];
+  let i = 0;
+  let j = 0;
+  let skipped = false;
+  while (i < s.length && j < l.length) {
+    if (s[i] === l[j]) {
+      i++;
+      j++;
+      continue;
+    }
+    if (skipped) return false;
+    skipped = true;
+    j++; // delete one char from the longer string
+  }
+  return true;
+}
+
+/** token-level match: 0 = strong (same/abbrev name), 1 = weak (fuzzy), -1 = no */
+function tokMatch(t: string, h: string): number {
+  if (t === h) return 0;
+  // nickname / abbreviation: mitch~mitchell, matt~matthew, ms~mahendra, allah~am
+  if (t.length >= 3 && h.length >= 3 && (h.startsWith(t) || t.startsWith(h))) return 0;
+  // one-letter spelling drift: mohammad~mohammed, abhishek~abishek
+  if (editDist1(t, h)) return 1;
+  // initials-style short tokens ("MS", "AM") vs the full name they abbreviate
+  if ((t.length <= 3 || h.length <= 3) && t[0] === h[0]) return 1;
+  return -1;
+}
+
+/**
+ * Surname-anchored fuzzy match for roster entries whose site name drifted
+ * from ours (nicknames "Mitch"~"Mitchell", initials "MS"~"Mahendra Singh",
+ * spelling variants, or swapped token order — the caller also tries the
+ * reversed token list). Returns 0 (strong), 1 (usable) or -1 (no match).
+ * Requires the surname to match; a weak overall verdict is only useful
+ * when the surname is unambiguous (checked by the caller).
+ */
+function fuzzyScore(want: string[], have: string[]): number {
+  const wn = want.filter((t) => t.length > 1);
+  const hn = have.filter((t) => t.length > 1);
+  if (wn.length === 0 || hn.length === 0) return -1;
+  const surname = tokMatch(wn[wn.length - 1], hn[hn.length - 1]);
+  if (surname === -1) return -1;
+  let weakest = surname;
+  const used = new Set<number>([hn.length - 1]);
+  for (let i = 0; i < wn.length - 1; i++) {
+    let best = -1;
+    let bestJ = -1;
+    for (let j = 0; j < hn.length - 1; j++) {
+      if (used.has(j)) continue;
+      const q = tokMatch(wn[i], hn[j]);
+      if (q !== -1 && (best === -1 || q < best)) {
+        best = q;
+        bestJ = j;
+      }
+    }
+    if (best === -1) return -1; // a first-name token matches nothing → different player
+    used.add(bestJ);
+    weakest = Math.max(weakest, best);
+  }
+  return weakest;
 }
 
 /* ------------------------------------------------------------------ */
@@ -276,11 +352,16 @@ function findEntry(roster: Roster, name: string): RosterEntry | null {
   const key = normKey(name);
   const exact = roster.byName.get(key);
   if (exact) return exact;
+
   const want = tokens(name);
+  const wantSurname = want.length ? want[want.length - 1] : null;
+  const entries = [...roster.byName.values()];
+
+  // 1) token-subsequence ("Raj Bawa" ⊆ "Raj Angad Bawa", "Aman Hakim Khan" ⊇ "Aman Khan")
   let best: RosterEntry | null = null;
   let bestExtra = Infinity;
-  for (const [k, e] of roster.byName) {
-    const have = tokens(k);
+  for (const e of entries) {
+    const have = tokens(e.name ?? "");
     if (isSubsequence(want, have) || isSubsequence(have, want)) {
       const extra = Math.abs(have.length - want.length);
       if (extra < bestExtra) {
@@ -289,7 +370,50 @@ function findEntry(roster: Roster, name: string): RosterEntry | null {
       }
     }
   }
-  return best;
+  if (best) return best;
+
+  // 2) surname-anchored fuzzy pass: nicknames ("Mitchell Santner" → "Mitch
+  //    Santner"), initials ("MS Dhoni" → "Mahendra Singh Dhoni"), spelling
+  //    drift ("Abhishek Porel" → "Abishek Porel"), single-letter forenames
+  //    ("T. Natarajan" → "Thangarasu Natarajan") and swapped token order
+  //    ("Smaran Ravichandran" → "Ravichandran Smaran"). A weak verdict is
+  //    only accepted when the surname is unambiguous in the roster, so
+  //    "Arshad Khan" never grabs Rashid Khan's photo.
+  const surnameCount = wantSurname
+    ? entries.filter((e) => {
+        const hv = tokens(e.name ?? "").filter((t) => t.length > 1);
+        return hv.length > 0 && tokMatch(wantSurname, hv[hv.length - 1]) === 0;
+      }).length
+    : 0;
+  let fuzzy: { e: RosterEntry; q: number } | null = null;
+  let tied = false;
+  for (const e of entries) {
+    const have = tokens(e.name ?? "");
+    for (const hv of [have, [...have].reverse()]) {
+      const q = fuzzyScore(want, hv);
+      if (q === -1) continue;
+      if (q > 0 && surnameCount !== 1) continue; // weak match needs a unique surname
+      if (!fuzzy || q < fuzzy.q) {
+        fuzzy = { e, q };
+        tied = false;
+      } else if (q === fuzzy.q && fuzzy.e !== e) {
+        tied = true; // two equally-good candidates → refuse to guess
+      }
+    }
+  }
+  if (fuzzy && !tied) return fuzzy.e;
+
+  // 3) strong-forename pass: the club renamed a player but kept his first
+  //    name ("Rasikh Salam" → "Rasikh Dar", "Tejasvi Singh" → "Tejasvi Dahiya")
+  if (want.length >= 2 && want[0].length >= 4) {
+    const cands = entries.filter((e) => {
+      const hv = tokens(e.name ?? "");
+      return hv.length >= 2 && hv[0] === want[0];
+    });
+    if (cands.length === 1) return cands[0];
+  }
+
+  return null;
 }
 
 /**

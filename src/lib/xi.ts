@@ -40,7 +40,8 @@ export interface XIState {
   valid: boolean;
   overseas: number;
   wks: number;
-  bowlers: number;      // PACE + SPIN
+  bowlers: number;      // PACE + SPIN (specialists)
+  bowlOpts: number;     // PACE + SPIN + AR (all bowling options)
   ars: number;
   batters: number;      // BAT + WK + AR
   score: number;        // balance score 0-100
@@ -52,13 +53,14 @@ export function validateXI(xi: Player[]): XIState {
   const wks = xi.filter((p) => p.role === "WK").length;
   const bowlers = xi.filter((p) => p.role === "PACE" || p.role === "SPIN").length;
   const ars = xi.filter((p) => p.role === "AR").length;
+  const bowlOpts = bowlers + ars;
   const batters = xi.filter((p) => p.role === "BAT" || p.role === "WK" || p.role === "AR").length;
 
   const count: Check[] = [
     { key: "total", label: "PLAYERS 11/11", ok: n === 11, detail: `${n} of 11 selected` },
     { key: "ov", label: `OVERSEAS ${overseas}/4`, ok: overseas <= 4, detail: "Max 4 overseas players in the XI" },
     { key: "wk", label: `KEEPER ${wks >= 1 ? "✓" : "0"}`, ok: wks >= 1, detail: "At least 1 wicketkeeper required" },
-    { key: "bowl", label: `BOWLING ${bowlers}/4`, ok: bowlers >= 4, detail: "At least 4 specialist bowlers (fast + spin)" },
+    { key: "bowl", label: `BOWLING ${bowlOpts}/5`, ok: bowlOpts >= 5, detail: "At least 5 bowling options (fast, spin, all-rounders)" },
     { key: "bat", label: `BATTING ${batters}/5`, ok: batters >= 5, detail: "At least 5 batting options (batters, keepers, all-rounders)" },
   ];
 
@@ -68,10 +70,10 @@ export function validateXI(xi: Player[]): XIState {
   if (overseas <= 4) score += 15;
   if (overseas >= 3) score += 5;
   if (wks >= 1) score += 15;
-  if (bowlers >= 4) score += 20;
+  if (bowlOpts >= 5) score += 20;
   if (batters >= 5) score += 15;
   if (wks >= 2 && wks <= 3) score += 3;
-  if (bowlers + ars >= 6) score += 2;
+  if (bowlOpts >= 6) score += 2;
 
-  return { count, valid: count.every((c) => c.ok), overseas, wks, bowlers, ars, batters, score };
+  return { count, valid: count.every((c) => c.ok), overseas, wks, bowlers, bowlOpts, ars, batters, score };
 }

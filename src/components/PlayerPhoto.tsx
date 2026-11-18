@@ -55,9 +55,9 @@ export function setPhotoMode(m: PhotoMode): void {
 
 const resolved = new Map<string, string | null>(); // key -> src (null = no photo, use avatar)
 const inflight = new Map<string, Promise<string | null>>();
-// v3: key now carries the previous franchise (trade-in photo fallback) and
-// invalidates stale "no photo" negatives from before the fallback existed
-const SS_KEY = "iplxi:photos:v3";
+// v4: name-matcher upgrade in iplPhotos.ts (nicknames, initials, spelling
+// drift) — invalidates stale "no photo" negatives from the old matcher
+const SS_KEY = "iplxi:photos:v4";
 
 if (typeof window !== "undefined") {
   try {

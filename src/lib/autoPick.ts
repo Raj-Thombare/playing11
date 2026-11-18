@@ -9,7 +9,7 @@ import { validateXI } from "./xi";
  *   - exactly 11 players
  *   - max 4 overseas
  *   - at least 1 wicketkeeper
- *   - at least 4 specialist bowlers, at least 5 batting options
+ *   - at least 5 bowling options (specialists + all-rounders), at least 5 batting options
  *
  * Scoring per player is driven by past records:
  *   batters    -> runs/match, career average, strike rate

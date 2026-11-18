@@ -7,7 +7,6 @@ import { PlayerPhoto, getPhotoMode, setPhotoMode, PREF_EVENT, type PhotoMode } f
 import { OverseasChip, RoleBadge, StatusBadge } from "./Badges";
 import { TeamLogo } from "./TeamLogo";
 import { BroadcastOverlay } from "./BroadcastOverlay";
-import { ShareXI } from "./ShareXI";
 import { ROLE_LABEL, ROLE_ORDER, fmtPrice, validateXI, type Check } from "@/lib/xi";
 import { autoPickXI, type AutoPickResult } from "@/lib/autoPick";
 import { decodeSlots } from "@/lib/share";
@@ -859,9 +858,6 @@ export function TeamWorkspace({
                 >
                   Mark as Final
                 </button>
-              </div>
-              <div className="mt-3 border-t border-white/10 pt-3">
-                <ShareXI team={team} slots={slots} ordered={ordered} captainId={captainId} />
               </div>
               {ai && (
                 <div className="mt-3 rounded-lg border border-purple-400/20 bg-purple-500/5 p-3">
