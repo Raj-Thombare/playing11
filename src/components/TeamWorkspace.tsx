@@ -1082,20 +1082,20 @@ export function TeamWorkspace({
                 </button>
                 <button
                   onClick={reset}
-                  className='rounded-lg border border-white/15 px-3 py-2 text-xs font-bold uppercase tracking-widest text-white/60 hover:bg-white/5'
+                  className='rounded-lg border border-white/15 px-3 py-2.5 text-xs font-bold uppercase tracking-widest text-white/60 hover:bg-white/5'
                   style={{ fontFamily: "var(--font-cond)" }}>
                   Reset
                 </button>
                 <button
                   onClick={() => setSaved(true)}
-                  className='rounded-lg border border-white/15 px-3 py-2 text-xs font-bold uppercase tracking-widest text-white/60 hover:bg-white/5'
+                  className='rounded-lg border border-white/15 px-3 py-2.5 text-xs font-bold uppercase tracking-widest text-white/60 hover:bg-white/5'
                   style={{ fontFamily: "var(--font-cond)" }}>
                   Mark as Final
                 </button>
                 <button
                   onClick={copyRevealLink}
                   disabled={!xi.length}
-                  className='col-span-2 rounded-lg border border-white/15 px-3 py-2 text-xs font-bold uppercase tracking-widest transition-transform enabled:hover:scale-[1.01] enabled:hover:bg-white/5 disabled:opacity-40'
+                  className='col-span-2 rounded-lg border border-white/15 px-3 py-2.5 text-xs font-bold uppercase tracking-widest transition-transform enabled:hover:scale-[1.01] enabled:hover:bg-white/5 disabled:opacity-40'
                   style={{
                     fontFamily: "var(--font-cond)",
                     color: linkCopied ? "#8fd694" : undefined,

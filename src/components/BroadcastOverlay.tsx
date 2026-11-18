@@ -390,25 +390,28 @@ export function BroadcastOverlay({
               </div>
             )}
 
-            {/* the other ten, in slot order — empty slots show placeholders */}
-            {restSlots.map((s, i) => {
-              const e = ordered.find((x) => x.slot === s);
-              return e ? (
-                <PlayerCard
-                  key={s}
-                  p={e.p}
-                  slot={s}
-                  delay={0.16 + i * 0.07}
-                  team={team}
-                />
-              ) : (
-                <EmptyCard key={s} slot={s} delay={0.16 + i * 0.07} />
-              );
-            })}
+            {/* the other ten, in slot order — empty slots show placeholders;
+                mobile: 2 columns for the cards (first item already took 1 col) */}
+            <div className='grid grid-cols-2 gap-2 lg:contents'>
+              {restSlots.map((s, i) => {
+                const e = ordered.find((x) => x.slot === s);
+                return e ? (
+                  <PlayerCard
+                    key={s}
+                    p={e.p}
+                    slot={s}
+                    delay={0.16 + i * 0.07}
+                    team={team}
+                  />
+                ) : (
+                  <EmptyCard key={s} slot={s} delay={0.16 + i * 0.07} />
+                );
+              })}
+            </div>
 
             {/* substitutes rail */}
             <div
-              className='anim-r col-span-2 flex flex-col overflow-hidden rounded-xl border border-white/15 bg-[#04162f]/85 sm:col-span-3 lg:col-span-1 lg:row-span-2 lg:col-start-7 lg:row-start-1'
+              className='anim-r flex flex-col overflow-hidden rounded-xl border border-white/15 bg-[#04162f]/85 sm:col-span-3 lg:col-span-1 lg:row-span-2 lg:col-start-7 lg:row-start-1'
               style={{ animationDelay: "0.55s" }}>
               <div
                 className='px-3 py-2.5 text-center text-lg font-bold uppercase tracking-wider'
